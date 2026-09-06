@@ -1,0 +1,12 @@
+{
+  "appId": "in.lkjriyasm.lemam",
+  "appName": "Le Mam",
+  "webDir": "public",
+  "server": {
+    "androidScheme": "https",
+    "cleartext": true
+  },
+  "android": {
+    "allowMixedContent": true
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "name": "le-kitchen-master",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Le Kitchen Master e-commerce catalog and storefront API",
+  "scripts": {
+    "dev": "node src/server.js",
+    "start": "node src/server.js",
+    "test": "node --test test/*.test.js",
+    "cap:sync": "npx cap sync android",
+    "android:setup": "bash scripts/setup-android-sdk.sh",
+    "build:apk": "bash scripts/build-apk.sh"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@capacitor/android": "^6.2.2",
+    "@capacitor/cli": "^6.2.2",
+    "@capacitor/core": "^6.2.2",
+    "express": "^4.21.2"
+  }
+}

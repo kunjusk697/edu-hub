@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Le Kitchen Master</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Playfair+Display:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <!-- Welcome / Intro -->
+      <section class="screen screen-welcome active" id="screen-welcome" data-screen="welcome">
+        <div class="welcome-brand" id="welcome-brand">Le Kitchen Master</div>
+        <div class="welcome-hero" aria-hidden="true">
+          <div class="welcome-illustration">
+            <span class="welcome-pot">🍳</span>
+            <span class="welcome-box">📦</span>
+          </div>
+        </div>
+        <div class="welcome-cta">
+          <h2>Your Favorite Kitchenware, Delivered Fast</h2>
+          <p>
+            Enjoy premium Aura &amp; Marvel cookware in the comfort of your home with our
+            reliable kitchen essentials delivery service.
+          </p>
+          <button class="btn-shop-now" id="welcome-start" type="button">
+            Shop Now
+            <span class="btn-arrow">→</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Home / Discovery -->
+      <section class="screen screen-home" id="screen-home" data-screen="home">
+        <header class="home-header">
+          <button class="icon-btn" type="button" aria-label="Menu">☰</button>
+          <button class="location-pill" type="button">
+            <span class="pin">📍</span>
+            <span id="location-label">Ernakulam, IN</span>
+          </button>
+          <button class="icon-btn" id="support-button" type="button" aria-label="Notifications">🔔</button>
+        </header>
+
+        <div class="search-bar">
+          <input id="search-input" type="search" placeholder="Search your favorite kitchenware" />
+          <button class="search-btn" id="search-button" type="button" aria-label="Search">🔍</button>
+        </div>
+
+        <div class="slideshow-bar" id="slideshow-bar" aria-label="Promotional slideshow">
+          <div class="slideshow-track" id="slideshow-track"></div>
+          <div class="slideshow-dots" id="slideshow-dots"></div>
+        </div>
+
+        <div class="section-head">
+          <h2>Categories</h2>
+          <button class="link-btn" data-screen-jump="menu" type="button">View All</button>
+        </div>
+        <div class="category-row" id="home-categories"></div>
+
+        <div class="section-head">
+          <h2>Top Products</h2>
+          <button class="link-btn" data-screen-jump="menu" type="button">View All</button>
+        </div>
+        <div class="product-row" id="recommended-products"></div>
+      </section>
+
+      <!-- Category Menu / Product List -->
+      <section class="screen screen-menu" id="screen-menu" data-screen="menu">
+        <header class="menu-header">
+          <button class="icon-btn" data-screen-jump="home" type="button" aria-label="Back">←</button>
+          <h1 id="menu-title">Cookware</h1>
+          <button class="icon-btn" type="button" aria-label="Search menu">🔍</button>
+        </header>
+
+        <div class="menu-meta">
+          <span class="meta-chip">⭐ 4.9 catalog</span>
+          <span class="meta-chip">🚚 Fast delivery</span>
+          <span class="meta-chip" id="menu-location">Ernakulam</span>
+        </div>
+
+        <div class="filter-row" id="filter-row">
+          <button class="filter-chip active" data-filter="all" type="button">All</button>
+          <button class="filter-chip" data-filter="Aura Series" type="button">Aura</button>
+          <button class="filter-chip" data-filter="Marvel Series" type="button">Marvel</button>
+          <button class="filter-chip" data-filter="best" type="button">Best Seller</button>
+        </div>
+
+        <h2 class="menu-section-title" id="menu-section-title">Best in Cookware</h2>
+        <div class="menu-list" id="category-products"></div>
+
+        <div class="menu-footer">
+          <button class="btn-add-cart" id="menu-add-cart" type="button">Add to Cart</button>
+        </div>
+      </section>
+
+      <!-- Single Product Detail -->
+      <section class="screen screen-product" id="screen-product" data-screen="product">
+        <header class="product-detail-header">
+          <button class="icon-btn" id="product-back" type="button" aria-label="Back">←</button>
+          <h1>Product Details</h1>
+          <button class="icon-btn" id="product-wishlist" type="button" aria-label="Wishlist">❤️</button>
+        </header>
+        <div class="product-detail-image-wrap">
+          <img id="product-image" alt="" />
+        </div>
+        <div class="product-detail-body">
+          <p class="product-sku" id="product-sku"></p>
+          <h2 id="product-name"></h2>
+          <p class="product-series" id="product-series"></p>
+          <div class="product-rating-row">
+            <span id="product-rating"></span>
+            <span class="product-price" id="product-price"></span>
+          </div>
+          <p class="product-description" id="product-description"></p>
+          <ul class="product-features" id="product-features"></ul>
+          <div class="product-detail-qty">
+            <span>Quantity</span>
+            <div class="qty-control" id="product-qty-control">
+              <button type="button" id="product-qty-minus" aria-label="Decrease">−</button>
+              <span id="product-qty-value">1</span>
+              <button type="button" id="product-qty-plus" aria-label="Increase">+</button>
+            </div>
+          </div>
+          <button class="btn-primary" id="product-add-cart" type="button">Add to Cart</button>
+        </div>
+      </section>
+
+      <!-- Orders -->
+      <section class="screen screen-orders" id="screen-orders" data-screen="orders">
+        <header class="page-header">
+          <h1>Orders</h1>
+        </header>
+        <div class="list-card" id="panel-orders"></div>
+      </section>
+
+      <!-- Wishlist -->
+      <section class="screen screen-wishlist" id="screen-wishlist" data-screen="wishlist">
+        <header class="page-header">
+          <h1>Wishlist</h1>
+        </header>
+        <div class="list-card" id="panel-wishlist"></div>
+      </section>
+
+      <!-- Profile -->
+      <section class="screen screen-profile" id="screen-profile" data-screen="profile">
+        <header class="page-header">
+          <h1>Profile</h1>
+          <p id="profile-subtitle">Guest account — manage your details</p>
+        </header>
+
+        <div class="profile-quick">
+          <button class="quick-card" data-screen-jump="orders" type="button">
+            <span>📋</span>
+            <strong>Orders</strong>
+          </button>
+          <button class="quick-card" data-screen-jump="wishlist" type="button">
+            <span>❤️</span>
+            <strong>Wishlist</strong>
+          </button>
+          <button class="quick-card" id="cart-shortcut" type="button">
+            <span>🛒</span>
+            <strong>Cart</strong>
+          </button>
+        </div>
+
+        <div class="list-card" id="panel-cart"></div>
+
+        <div class="list-card" id="checkout-card">
+          <h3>Checkout with UPI QR</h3>
+          <p id="checkout-hint">Place your order, then scan the store UPI QR to pay.</p>
+          <button class="btn-primary" id="checkout-button" type="button">Place order &amp; show QR</button>
+          <div id="upi-checkout" hidden></div>
+        </div>
+
+        <div class="form-card" id="server-settings-card">
+          <h3>Store server (APK)</h3>
+          <p class="field-hint">Point the app at your Le Mam API, e.g. <code>http://192.168.1.10:3000</code></p>
+          <form id="server-form">
+            <label>
+              API Server URL
+              <input id="profile-server-url" name="serverUrl" type="url" placeholder="http://your-server:3000" />
+            </label>
+            <button class="btn-primary" type="submit">Save server URL</button>
+          </form>
+          <p class="field-hint" id="server-status"></p>
+        </div>
+
+        <div class="form-card">
+          <h3>Contact &amp; Shipping</h3>
+          <form id="profile-form">
+            <label>
+              Email Address
+              <input id="profile-email" name="email" type="email" required />
+            </label>
+            <label>
+              Phone No.
+              <input id="profile-phone" name="phone" type="tel" required />
+            </label>
+            <label>
+              Save Address
+              <textarea id="profile-address" name="address" rows="3" required></textarea>
+            </label>
+            <button class="btn-primary" type="submit">Save profile</button>
+          </form>
+        </div>
+      </section>
+
+      <nav class="bottom-nav" id="bottom-nav" hidden aria-label="Primary">
+        <button type="button" data-screen="home" class="active">
+          <span class="nav-icon">🏠</span>
+          <span>Home</span>
+        </button>
+        <button type="button" data-screen="orders">
+          <span class="nav-icon">📋</span>
+          <span>Orders</span>
+        </button>
+        <button type="button" data-screen="wishlist">
+          <span class="nav-icon">❤️</span>
+          <span>Wishlist</span>
+        </button>
+        <button type="button" data-screen="profile">
+          <span class="nav-icon">👤</span>
+          <span>Profile</span>
+        </button>
+      </nav>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/app.js" type="module"></script>
+  </body>
+</html>

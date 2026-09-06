@@ -1,0 +1,17 @@
+{
+  "name": "Le Kitchen Master",
+  "install": "bash .cursor/scripts/install.sh",
+  "terminals": [
+    {
+      "name": "dev-server",
+      "command": "npm run dev",
+      "description": "Le Kitchen Master storefront on port 3000"
+    }
+  ],
+  "ports": [
+    {
+      "name": "web",
+      "port": 3000
+    }
+  ]
+}

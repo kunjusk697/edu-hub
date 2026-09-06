@@ -6,6 +6,9 @@ const state = {
   menuProducts: [],
   quantities: {},
   searchQuery: "",
+  activeProduct: null,
+  productQty: 1,
+  previousScreen: "home",
 };
 
 const screens = [...document.querySelectorAll("[data-screen]")];
@@ -37,7 +40,7 @@ function showScreen(name) {
     screen.classList.toggle("active", screen.dataset.screen === name);
   });
 
-  const showNav = name !== "welcome" && name !== "menu";
+  const showNav = !["welcome", "menu", "product"].includes(name);
   bottomNav.hidden = !showNav;
 
   navButtons.forEach((button) => {
@@ -48,21 +51,20 @@ function showScreen(name) {
     name === "menu" ? "block" : "none";
 }
 
-function categoryPill(category) {
-  return `
-    <button class="category-pill" data-category="${category.id}" type="button">
-      <div class="cat-icon" style="background:${category.color}22">${category.icon}</div>
-      <span>${category.name}</span>
-    </button>
-  `;
+function productThumb(product, altText) {
+  if (product.imageThumb || product.image) {
+    return `<img src="${product.imageThumb || product.image}" alt="${altText}" loading="lazy" />`;
+  }
+
+  return `<span>${product.categoryIcon}</span>`;
 }
 
 function topProductCard(product) {
   return `
-    <article class="top-product-card" data-open-category="${product.categoryId}">
-      <div class="top-product-visual" style="background:linear-gradient(135deg,${product.categoryColor},#333)">
+    <article class="top-product-card" data-open-product="${product.id}">
+      <div class="top-product-visual">
         <span class="rating">⭐ ${pseudoRating(product)}</span>
-        <span>${product.categoryIcon}</span>
+        ${productThumb(product, product.name)}
       </div>
       <div class="top-product-body">
         <strong>${product.name}</strong>
@@ -78,14 +80,14 @@ function topProductCard(product) {
 function menuItem(product) {
   const qty = state.quantities[product.id] || 0;
   return `
-    <article class="menu-item" data-product-id="${product.id}">
-      <div class="menu-item-thumb" style="background:linear-gradient(135deg,${product.categoryColor},#444)">
-        ${product.categoryIcon}
+    <article class="menu-item" data-open-product="${product.id}">
+      <div class="menu-item-thumb">
+        ${productThumb(product, product.name)}
       </div>
       <div class="menu-item-info">
         <strong>${product.name}</strong>
         <p>${product.description}</p>
-        <span class="rating">⭐ ${pseudoRating(product)}</span>
+        <span class="rating">⭐ ${pseudoRating(product)} · ${product.sku || ""}</span>
       </div>
       <div class="menu-item-actions">
         <span class="price">${product.formattedPrice}</span>
@@ -97,6 +99,39 @@ function menuItem(product) {
       </div>
     </article>
   `;
+}
+
+async function openProductDetail(productId) {
+  const product = await api(`/api/products/${productId}`);
+  state.activeProduct = product;
+  state.productQty = state.quantities[productId] || 1;
+  state.previousScreen = document.querySelector(".screen.active")?.dataset.screen || "home";
+
+  document.getElementById("product-image").src = product.image;
+  document.getElementById("product-image").alt = product.name;
+  document.getElementById("product-sku").textContent = product.sku;
+  document.getElementById("product-name").textContent = product.name;
+  document.getElementById("product-series").textContent = `${product.series} · ${product.categoryName}`;
+  document.getElementById("product-rating").textContent = `⭐ ${pseudoRating(product)} rating`;
+  document.getElementById("product-price").textContent = product.formattedPrice;
+  document.getElementById("product-description").textContent = product.description;
+  document.getElementById("product-features").innerHTML = (product.features || [])
+    .map((feature) => `<li>${feature}</li>`)
+    .join("");
+  document.getElementById("product-qty-value").textContent = String(state.productQty);
+
+  showScreen("product");
+}
+
+function bindProductOpenHandlers() {
+  document.querySelectorAll("[data-open-product]").forEach((element) => {
+    element.addEventListener("click", (event) => {
+      if (event.target.closest("[data-qty-plus], [data-qty-minus]")) {
+        return;
+      }
+      openProductDetail(element.dataset.openProduct);
+    });
+  });
 }
 
 function renderMenuList() {
@@ -122,6 +157,7 @@ function renderMenuList() {
     : `<p class="empty-state">No products match this filter.</p>`;
 
   bindQuantityControls();
+  bindProductOpenHandlers();
 }
 
 async function loadCategoryProducts(categoryId) {
@@ -216,6 +252,15 @@ async function runSearch() {
   }
 }
 
+function categoryPill(category) {
+  return `
+    <button class="category-pill" data-category="${category.id}" type="button">
+      <div class="cat-icon" style="background:${category.color}22">${category.icon}</div>
+      <span>${category.name}</span>
+    </button>
+  `;
+}
+
 async function init() {
   bottomNav.hidden = true;
 
@@ -293,6 +338,45 @@ async function init() {
     });
   });
 
+  document.getElementById("product-back").addEventListener("click", () => {
+    showScreen(state.previousScreen === "product" ? "home" : state.previousScreen);
+  });
+
+  document.getElementById("product-qty-plus").addEventListener("click", () => {
+    state.productQty += 1;
+    document.getElementById("product-qty-value").textContent = String(state.productQty);
+  });
+
+  document.getElementById("product-qty-minus").addEventListener("click", () => {
+    state.productQty = Math.max(1, state.productQty - 1);
+    document.getElementById("product-qty-value").textContent = String(state.productQty);
+  });
+
+  document.getElementById("product-add-cart").addEventListener("click", async () => {
+    if (!state.activeProduct) {
+      return;
+    }
+
+    await api(`/api/cart/${state.activeProduct.id}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ quantity: state.productQty }),
+    });
+
+    state.quantities[state.activeProduct.id] = state.productQty;
+    await refreshLists();
+    showScreen("profile");
+  });
+
+  document.getElementById("product-wishlist").addEventListener("click", async () => {
+    if (!state.activeProduct) {
+      return;
+    }
+
+    await api(`/api/wishlist/${state.activeProduct.id}`, { method: "POST" });
+    await refreshLists();
+  });
+
   document.querySelectorAll("[data-screen-jump]").forEach((button) => {
     button.addEventListener("click", async () => {
       const target = button.dataset.screenJump;
@@ -351,6 +435,14 @@ async function init() {
   }
 
   await refreshLists();
+
+  const hash = window.location.hash.replace(/^#\/?/, "");
+  if (hash.startsWith("product/")) {
+    const productId = hash.split("/")[1];
+    if (productId) {
+      await openProductDetail(productId);
+    }
+  }
 }
 
 init().catch((error) => {

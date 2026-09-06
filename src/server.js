@@ -4,6 +4,7 @@ const path = require("path");
 const appInfo = require("./data/app-info");
 const categories = require("./data/categories");
 const products = require("./data/products");
+const { imageForProduct, skuForProduct } = require("./data/product-images");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -24,8 +25,12 @@ function formatPrice(price) {
 
 function enrichProduct(product) {
   const category = categories.find((item) => item.id === product.categoryId);
+  const image = imageForProduct(product);
   return {
     ...product,
+    sku: skuForProduct(product),
+    image,
+    imageThumb: image,
     formattedPrice: formatPrice(product.price),
     categoryName: category ? category.name : product.categoryId,
     categoryColor: category ? category.color : "#495057",

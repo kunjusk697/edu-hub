@@ -87,6 +87,13 @@ describe("Le Kitchen Master API", () => {
     assert.ok(response.body.every((product) => product.categoryId === "appliances"));
   });
 
+  it("returns product with brochure image and sku", async () => {
+    const response = await request("GET", "/api/products/aura-kadai-22-glass");
+    assert.equal(response.status, 200);
+    assert.equal(response.body.sku, "AURA KA 22");
+    assert.match(response.body.image, /^\/images\/products\//);
+  });
+
   it("adds products to cart and wishlist", async () => {
     const cartResponse = await request("POST", "/api/cart/chop-magic-650", {
       quantity: 1,

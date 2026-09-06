@@ -96,6 +96,38 @@
         </div>
       </section>
 
+      <!-- Single Product Detail -->
+      <section class="screen screen-product" id="screen-product" data-screen="product">
+        <header class="product-detail-header">
+          <button class="icon-btn" id="product-back" type="button" aria-label="Back">←</button>
+          <h1>Product Details</h1>
+          <button class="icon-btn" id="product-wishlist" type="button" aria-label="Wishlist">❤️</button>
+        </header>
+        <div class="product-detail-image-wrap">
+          <img id="product-image" alt="" />
+        </div>
+        <div class="product-detail-body">
+          <p class="product-sku" id="product-sku"></p>
+          <h2 id="product-name"></h2>
+          <p class="product-series" id="product-series"></p>
+          <div class="product-rating-row">
+            <span id="product-rating"></span>
+            <span class="product-price" id="product-price"></span>
+          </div>
+          <p class="product-description" id="product-description"></p>
+          <ul class="product-features" id="product-features"></ul>
+          <div class="product-detail-qty">
+            <span>Quantity</span>
+            <div class="qty-control" id="product-qty-control">
+              <button type="button" id="product-qty-minus" aria-label="Decrease">−</button>
+              <span id="product-qty-value">1</span>
+              <button type="button" id="product-qty-plus" aria-label="Increase">+</button>
+            </div>
+          </div>
+          <button class="btn-primary" id="product-add-cart" type="button">Add to Cart</button>
+        </div>
+      </section>
+
       <!-- Orders -->
       <section class="screen screen-orders" id="screen-orders" data-screen="orders">
         <header class="page-header">

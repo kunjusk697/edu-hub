@@ -1,11 +1,21 @@
 const express = require("express");
 const path = require("path");
 
-const appInfo = require("./data/app-info");
 const categories = require("./data/categories");
-const products = require("./data/products");
-const slides = require("./data/slides");
+const {
+  loadCatalog,
+  saveCatalog,
+  loadOrders,
+  saveOrders,
+  loadExpenses,
+  saveExpenses,
+} = require("./data/catalog-store");
 const { imageForProduct, skuForProduct } = require("./data/product-images");
+const { adminRouter } = require("./routes/admin");
+
+const catalog = loadCatalog();
+let orders = loadOrders();
+let expenses = loadExpenses();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -26,43 +36,56 @@ function formatPrice(price) {
 
 function enrichProduct(product) {
   const category = categories.find((item) => item.id === product.categoryId);
-  const image = imageForProduct(product);
+  const image = product.image || imageForProduct(product);
   return {
     ...product,
-    sku: skuForProduct(product),
+    sku: product.sku || skuForProduct(product),
     image,
     imageThumb: image,
     formattedPrice: formatPrice(product.price),
     categoryName: category ? category.name : product.categoryId,
     categoryColor: category ? category.color : "#495057",
     categoryIcon: category ? category.icon : "🛒",
+    categoryGroup: category ? category.group : "",
   };
 }
 
+function getAppInfo() {
+  return catalog.settings;
+}
+
+function getSlides() {
+  return catalog.slides;
+}
+
+function getProducts() {
+  return catalog.products;
+}
+
 app.get("/api/health", (_req, res) => {
-  res.json({ status: "ok", brand: appInfo.brandName });
+  res.json({ status: "ok", brand: getAppInfo().brandName });
 });
 
 app.get("/api/app-info", (_req, res) => {
-  res.json(appInfo);
+  res.json(getAppInfo());
 });
 
 app.get("/api/slides", (_req, res) => {
-  res.json(slides);
+  res.json(getSlides());
 });
 
 app.get("/api/categories", (_req, res) => {
   res.json(
     categories.map((category) => ({
       ...category,
-      productCount: products.filter((product) => product.categoryId === category.id).length,
+      productCount: getProducts().filter((product) => product.categoryId === category.id).length,
     }))
   );
 });
 
 app.get("/api/products", (req, res) => {
   const { category, featured, search, series } = req.query;
-  let results = [...products];
+  let results = [...getProducts()];
 
   if (category) {
     results = results.filter((product) => product.categoryId === category);
@@ -85,8 +108,8 @@ app.get("/api/products", (req, res) => {
   }
 
   if (featured === "true") {
-    results = appInfo.recommendedProductIds
-      .map((id) => products.find((product) => product.id === id))
+    results = getAppInfo().recommendedProductIds
+      .map((id) => getProducts().find((product) => product.id === id))
       .filter(Boolean);
   }
 
@@ -94,7 +117,7 @@ app.get("/api/products", (req, res) => {
 });
 
 app.get("/api/products/:id", (req, res) => {
-  const product = products.find((item) => item.id === req.params.id);
+  const product = getProducts().find((item) => item.id === req.params.id);
   if (!product) {
     return res.status(404).json({ error: "Product not found" });
   }
@@ -104,14 +127,14 @@ app.get("/api/products/:id", (req, res) => {
 app.get("/api/wishlist", (_req, res) => {
   res.json(
     [...wishlist]
-      .map((id) => products.find((product) => product.id === id))
+      .map((id) => getProducts().find((product) => product.id === id))
       .filter(Boolean)
       .map(enrichProduct)
   );
 });
 
 app.post("/api/wishlist/:id", (req, res) => {
-  const product = products.find((item) => item.id === req.params.id);
+  const product = getProducts().find((item) => item.id === req.params.id);
   if (!product) {
     return res.status(404).json({ error: "Product not found" });
   }
@@ -125,17 +148,19 @@ app.delete("/api/wishlist/:id", (req, res) => {
 });
 
 app.get("/api/cart", (_req, res) => {
-  const items = [...cart.entries()].map(([id, quantity]) => {
-    const product = products.find((item) => item.id === id);
-    return product ? { ...enrichProduct(product), quantity } : null;
-  }).filter(Boolean);
+  const items = [...cart.entries()]
+    .map(([id, quantity]) => {
+      const product = getProducts().find((item) => item.id === id);
+      return product ? { ...enrichProduct(product), quantity } : null;
+    })
+    .filter(Boolean);
 
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
   res.json({ items, total, formattedTotal: formatPrice(total) });
 });
 
 app.post("/api/cart/:id", (req, res) => {
-  const product = products.find((item) => item.id === req.params.id);
+  const product = getProducts().find((item) => item.id === req.params.id);
   if (!product) {
     return res.status(404).json({ error: "Product not found" });
   }
@@ -145,9 +170,75 @@ app.post("/api/cart/:id", (req, res) => {
   res.status(201).json({ productId: product.id, quantity: cart.get(product.id) });
 });
 
+app.post("/api/checkout", (req, res) => {
+  const items = [...cart.entries()]
+    .map(([id, quantity]) => {
+      const product = getProducts().find((item) => item.id === id);
+      return product ? { ...enrichProduct(product), quantity } : null;
+    })
+    .filter(Boolean);
+
+  if (!items.length) {
+    return res.status(400).json({ error: "Cart is empty" });
+  }
+
+  const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const order = {
+    id: `ord-${Date.now()}`,
+    customerName: req.body.customerName || "Guest",
+    customerPhone: req.body.customerPhone || "",
+    customerEmail: req.body.customerEmail || "",
+    items,
+    total,
+    formattedTotal: formatPrice(total),
+    status: "placed",
+    paymentStatus: "pending",
+    paymentMethod: "upi_qr",
+    createdAt: new Date().toISOString(),
+    deliveredAt: null,
+  };
+
+  orders.unshift(order);
+  saveOrders(orders);
+  cart.clear();
+
+  res.status(201).json({
+    order,
+    upi: getAppInfo().upi,
+  });
+});
+
+app.get("/api/orders", (req, res) => {
+  const phone = req.query.phone;
+  const results = phone
+    ? orders.filter((order) => order.customerPhone === phone)
+    : orders;
+  res.json(results);
+});
+
+app.use(
+  "/api/admin",
+  adminRouter({
+    catalog,
+    saveCatalog,
+    orders,
+    saveOrders: (nextOrders) => {
+      orders = nextOrders;
+      saveOrders(orders);
+    },
+    expenses,
+    saveExpenses: (nextExpenses) => {
+      expenses = nextExpenses;
+      saveExpenses(expenses);
+    },
+    enrichProduct,
+    formatPrice,
+  })
+);
+
 if (require.main === module) {
   app.listen(PORT, "0.0.0.0", () => {
-    console.log(`${appInfo.brandName} listening on http://0.0.0.0:${PORT}`);
+    console.log(`${getAppInfo().brandName} listening on http://0.0.0.0:${PORT}`);
   });
 }
 

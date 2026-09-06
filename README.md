@@ -1,8 +1,15 @@
-# Le Kitchen Master
+# Le Mam / Le Kitchen Master
 
-Modern & stylish kitchenware and cutlery e-commerce storefront.
+Modern & stylish kitchenware and cutlery e-commerce storefront with admin panel.
 
-**Tagline:** Health is homemade
+## Catalog (Le Mam brochure)
+
+- **Cookware** — Tri-Ply Aura Series, Marvel Non-Stick, Granite Tawas, Kadai, Fry Pans, Puttu Makers
+- **Appliances** — Electric Kettles, Gas Stoves, Push Choppers, Hand Choppers
+- **Thermoware** — Belly, Pearl, and Marvel insulated casseroles
+- **Kitchen Tools & Cutlery** — Whisks, strainers, lemon squeezers, lunch boxes, scissors
+
+> There is no “Dising” product line — that referred to the Foodies-style **design model** used for the mobile UI.
 
 ## Development
 
@@ -11,7 +18,20 @@ npm ci
 npm run dev
 ```
 
-Open http://localhost:3000 for the storefront UI.
+- Storefront: http://localhost:3000
+- Admin panel: http://localhost:3000/admin.html
+
+## Admin panel
+
+Token (demo): `lemam-admin-demo` or set `LKM_ADMIN_TOKEN` in the environment.
+
+| Feature | Description |
+| --- | --- |
+| Products | Add products with photos/MRP, update prices |
+| Home banners | Edit slideshow offers on the home page |
+| Orders | Mark delivery status and verify UPI payments |
+| Accounts | Daily sales, expenses, profit/loss report |
+| UPI QR | Configure GPay / PhonePe / Paytm QR image and UPI ID |
 
 ## Scripts
 
@@ -20,22 +40,8 @@ Open http://localhost:3000 for the storefront UI.
 | `npm run dev` | Start the development server on port 3000 |
 | `npm test` | Run API tests |
 
-## Content architecture
-
-- **Home:** promotional banner, category shortcuts, recommended products
-- **Categories:** sidebar navigation across appliances, bakeware, cookware, dinnerware, kitchen tools, storage, bottles, and more
-- **Profile:** guest cart, wishlist, orders, and editable contact/shipping fields
-
-## API
-
-- `GET /api/app-info` — brand, tagline, and contact details
-- `GET /api/categories` — product categories with counts
-- `GET /api/products` — catalog with optional `category`, `featured`, `search`, and `series` filters
-- `GET /api/cart` / `POST /api/cart/:id` — demo cart
-- `GET /api/wishlist` / `POST /api/wishlist/:id` — demo wishlist
-
 ## Contact
 
-- Email: info@lkjnnm.in
-- Phone: +91 9947160697
-- Website: www.lkjriyasm.in
+- Email: info@lemam.in
+- Phone: +91 7356915954
+- Website: www.lemam.in

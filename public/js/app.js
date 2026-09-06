@@ -212,7 +212,13 @@ async function addMenuSelectionsToCart() {
 }
 
 async function refreshLists() {
-  const [cart, wishlist] = await Promise.all([api("/api/cart"), api("/api/wishlist")]);
+  const [cart, wishlist, appInfo] = await Promise.all([
+    api("/api/cart"),
+    api("/api/wishlist"),
+    api("/api/app-info"),
+  ]);
+
+  state.appInfo = appInfo;
 
   document.getElementById("panel-cart").innerHTML = cart.items.length
     ? `<h3>Your Cart</h3><ul>${cart.items
@@ -225,14 +231,49 @@ async function refreshLists() {
         .join("")}</ul><p><strong>Total:</strong> ${cart.formattedTotal}</p>`
     : `<p class="empty-state">Your cart is empty. Browse Aura cookware or Chop Magic choppers.</p>`;
 
+  document.getElementById("checkout-button").disabled = !cart.items.length;
+
   document.getElementById("panel-wishlist").innerHTML = wishlist.length
     ? `<ul>${wishlist
         .map((item) => `<li><strong>${item.name}</strong> — ${item.formattedPrice}</li>`)
         .join("")}</ul>`
     : `<p class="empty-state">Save Vacuum Flasks, Puttu Makers, or Tri-Ply pans to your wishlist.</p>`;
 
-  document.getElementById("panel-orders").innerHTML =
-    `<p class="empty-state">No orders yet. Your checkout history will appear here.</p>`;
+  const phone = document.getElementById("profile-phone").value;
+  const orders = phone ? await api(`/api/orders?phone=${encodeURIComponent(phone)}`) : await api("/api/orders");
+
+  document.getElementById("panel-orders").innerHTML = orders.length
+    ? `<ul>${orders
+        .map(
+          (order) =>
+            `<li><strong>${order.id}</strong> — ${order.formattedTotal} · ${order.status} · payment ${order.paymentStatus}</li>`
+        )
+        .join("")}</ul>`
+    : `<p class="empty-state">No orders yet. Your checkout history will appear here.</p>`;
+}
+
+async function checkoutOrder() {
+  const checkout = await api("/api/checkout", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      customerName: "Guest",
+      customerPhone: document.getElementById("profile-phone").value,
+      customerEmail: document.getElementById("profile-email").value,
+    }),
+  });
+
+  const upiBox = document.getElementById("upi-checkout");
+  upiBox.hidden = false;
+  upiBox.innerHTML = `
+    <p><strong>Order ${checkout.order.id}</strong> placed. Scan to pay ${checkout.order.formattedTotal}.</p>
+    <img src="${checkout.upi.qrImage}" alt="UPI QR code" />
+    <p>${checkout.upi.payeeName} · ${checkout.upi.upiId}</p>
+    <p>${checkout.upi.note}</p>
+  `;
+
+  await refreshLists();
+  showScreen("orders");
 }
 
 async function runSearch() {
@@ -478,6 +519,8 @@ async function init() {
   document.getElementById("cart-shortcut").addEventListener("click", async () => {
     await refreshLists();
   });
+
+  document.getElementById("checkout-button").addEventListener("click", checkoutOrder);
 
   document.getElementById("profile-form").addEventListener("submit", (event) => {
     event.preventDefault();

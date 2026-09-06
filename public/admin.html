@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Le Mam Admin</title>
+    <link rel="stylesheet" href="/css/admin.css" />
+  </head>
+  <body>
+    <div class="admin-shell">
+      <aside class="admin-sidebar">
+        <h1>Le Mam Admin</h1>
+        <p class="admin-subtitle">Catalog, orders, finance &amp; UPI</p>
+        <nav>
+          <button class="nav-btn active" data-panel="dashboard" type="button">Dashboard</button>
+          <button class="nav-btn" data-panel="products" type="button">Products</button>
+          <button class="nav-btn" data-panel="banners" type="button">Home Banners</button>
+          <button class="nav-btn" data-panel="orders" type="button">Orders</button>
+          <button class="nav-btn" data-panel="finance" type="button">Accounts</button>
+          <button class="nav-btn" data-panel="upi" type="button">UPI QR</button>
+        </nav>
+        <a class="store-link" href="/">← Back to Store</a>
+      </aside>
+
+      <main class="admin-main">
+        <header class="admin-header">
+          <div>
+            <label class="token-label" for="admin-token">Admin token</label>
+            <input id="admin-token" type="password" value="lemam-admin-demo" />
+          </div>
+          <button id="refresh-all" type="button">Refresh</button>
+        </header>
+
+        <section class="panel active" id="panel-dashboard">
+          <h2>Dashboard</h2>
+          <div class="stats-grid" id="dashboard-stats"></div>
+        </section>
+
+        <section class="panel" id="panel-products">
+          <h2>Products</h2>
+          <form class="card" id="product-form">
+            <h3>Add product</h3>
+            <div class="grid-2">
+              <label>Name<input name="name" required /></label>
+              <label>SKU<input name="sku" /></label>
+              <label>MRP (₹)<input name="price" type="number" min="1" required /></label>
+              <label>Category<input name="categoryId" placeholder="cookware" required /></label>
+              <label>Series<input name="series" placeholder="Aura Series" /></label>
+              <label>Image URL<input name="image" placeholder="/images/products/..." /></label>
+            </div>
+            <label>Description<textarea name="description" rows="2"></textarea></label>
+            <button type="submit">Add product</button>
+          </form>
+          <div class="card" id="products-table"></div>
+        </section>
+
+        <section class="panel" id="panel-banners">
+          <h2>Home slideshow banners</h2>
+          <div id="slides-editor"></div>
+        </section>
+
+        <section class="panel" id="panel-orders">
+          <h2>Orders &amp; delivery</h2>
+          <div class="card" id="orders-table"></div>
+        </section>
+
+        <section class="panel" id="panel-finance">
+          <h2>Accounts &amp; profit / loss</h2>
+          <div class="stats-grid" id="finance-stats"></div>
+          <form class="card" id="expense-form">
+            <h3>Add expense</h3>
+            <div class="grid-2">
+              <label>Label<input name="label" required /></label>
+              <label>Amount (₹)<input name="amount" type="number" min="1" required /></label>
+            </div>
+            <button type="submit">Add expense</button>
+          </form>
+          <div class="card" id="expenses-table"></div>
+        </section>
+
+        <section class="panel" id="panel-upi">
+          <h2>UPI QR payment</h2>
+          <form class="card" id="upi-form">
+            <div class="grid-2">
+              <label>Payee name<input name="payeeName" required /></label>
+              <label>UPI ID<input name="upiId" required /></label>
+            </div>
+            <label>QR image URL<input name="qrImage" required /></label>
+            <label>Payment note<textarea name="note" rows="2"></textarea></label>
+            <button type="submit">Save UPI settings</button>
+          </form>
+          <div class="card upi-preview" id="upi-preview"></div>
+        </section>
+      </main>
+    </div>
+    <script src="/js/admin.js" type="module"></script>
+  </body>
+</html>

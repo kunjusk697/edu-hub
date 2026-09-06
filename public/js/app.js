@@ -27,8 +27,17 @@ function pseudoRating(product) {
   return (4 + (product.price % 9) / 10).toFixed(1);
 }
 
+function apiBaseUrl() {
+  const saved = localStorage.getItem("lkm-api-base");
+  if (saved) {
+    return saved.replace(/\/$/, "");
+  }
+  const configured = window.APP_CONFIG?.apiBase || "";
+  return configured.replace(/\/$/, "");
+}
+
 async function api(path, options) {
-  const response = await fetch(path, options);
+  const response = await fetch(`${apiBaseUrl()}${path}`, options);
   if (!response.ok) {
     throw new Error(`Request failed: ${path}`);
   }
@@ -521,6 +530,22 @@ async function init() {
   });
 
   document.getElementById("checkout-button").addEventListener("click", checkoutOrder);
+
+  document.getElementById("server-form").addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const value = document.getElementById("profile-server-url").value.trim().replace(/\/$/, "");
+    localStorage.setItem("lkm-api-base", value);
+    document.getElementById("server-status").textContent = value
+      ? `Saved. Reloading with ${value}…`
+      : "Cleared. Reloading with same-origin API…";
+    location.reload();
+  });
+
+  const savedServer = localStorage.getItem("lkm-api-base");
+  if (savedServer) {
+    document.getElementById("profile-server-url").value = savedServer;
+    document.getElementById("server-status").textContent = `Using ${savedServer}`;
+  }
 
   document.getElementById("profile-form").addEventListener("submit", (event) => {
     event.preventDefault();

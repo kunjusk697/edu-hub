@@ -1,2 +1,9 @@
 node_modules/
 data/runtime/
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+dist/
+*.apk
+.idea/

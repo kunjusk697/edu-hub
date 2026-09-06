@@ -680,6 +680,13 @@ textarea {
   margin: 0 0 14px;
 }
 
+.field-hint {
+  margin: 0 0 12px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
 .form-card label {
   display: grid;
   gap: 6px;

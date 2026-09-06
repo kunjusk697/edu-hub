@@ -10,7 +10,7 @@
       href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Playfair+Display:wght@700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="/css/styles.css" />
+    <link rel="stylesheet" href="css/styles.css" />
   </head>
   <body>
     <div class="app-shell">
@@ -178,6 +178,19 @@
           <div id="upi-checkout" hidden></div>
         </div>
 
+        <div class="form-card" id="server-settings-card">
+          <h3>Store server (APK)</h3>
+          <p class="field-hint">Point the app at your Le Mam API, e.g. <code>http://192.168.1.10:3000</code></p>
+          <form id="server-form">
+            <label>
+              API Server URL
+              <input id="profile-server-url" name="serverUrl" type="url" placeholder="http://your-server:3000" />
+            </label>
+            <button class="btn-primary" type="submit">Save server URL</button>
+          </form>
+          <p class="field-hint" id="server-status"></p>
+        </div>
+
         <div class="form-card">
           <h3>Contact &amp; Shipping</h3>
           <form id="profile-form">
@@ -218,6 +231,7 @@
       </nav>
     </div>
 
-    <script src="/js/app.js" type="module"></script>
+    <script src="js/config.js"></script>
+    <script src="js/app.js" type="module"></script>
   </body>
 </html>

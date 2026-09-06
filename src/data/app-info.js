@@ -3,8 +3,8 @@ module.exports = {
   tagline: "Health is homemade",
   subtitle: "Modern & Stylish Kitchen Ware & Cutlery Tools",
   contact: {
-    email: "info@lkjnnm.in",
-    phone: "+91 9947160697",
+    email: "info@lkjkdkdjm.in",
+    phone: "+91 9947169697",
     website: "www.lkjriyasm.in",
     address: "Fathish Appliances Pvt. Ltd, Kolencherry, Ernakulam - 682 311",
   },

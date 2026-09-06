@@ -9,9 +9,9 @@ function defaultSettings() {
     tagline: seedAppInfo.tagline,
     subtitle: seedAppInfo.subtitle,
     contact: {
-      email: "info@lemam.in",
-      phone: "+91 7356915954",
-      website: "www.lemam.in",
+      email: "info@lkjkdkdjm.in",
+      phone: "+91 9947169697",
+      website: "www.lkjriyasm.in",
       address: "Fathish Appliances Pvt. Ltd, Kolencherry, Ernakulam - 682 311",
     },
     promotion: seedAppInfo.promotion,

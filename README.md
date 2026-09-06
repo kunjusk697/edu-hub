@@ -42,6 +42,6 @@ Token (demo): `lemam-admin-demo` or set `LKM_ADMIN_TOKEN` in the environment.
 
 ## Contact
 
-- Email: info@lemam.in
-- Phone: +91 7356915954
-- Website: www.lemam.in
+- Email: info@lkjkdkdjm.in
+- Phone: +91 9947169697
+- Website: www.lkjriyasm.in

@@ -67,7 +67,7 @@ describe("Le Mam storefront API", () => {
   it("returns Le Mam contact info", async () => {
     const response = await request("GET", "/api/app-info");
     assert.equal(response.status, 200);
-    assert.equal(response.body.contact.email, "info@lemam.in");
+    assert.equal(response.body.contact.email, "info@lkjkdkdjm.in");
     assert.equal(response.body.upi.upiId, "lemam@upi");
   });
 
@@ -80,8 +80,8 @@ describe("Le Mam storefront API", () => {
   it("creates checkout order with UPI details", async () => {
     await request("POST", "/api/cart/chop-magic-650", { quantity: 1 });
     const response = await request("POST", "/api/checkout", {
-      customerPhone: "+91 7356915954",
-      customerEmail: "info@lemam.in",
+      customerPhone: "+91 9947169697",
+      customerEmail: "info@lkjkdkdjm.in",
     });
 
     assert.equal(response.status, 201);

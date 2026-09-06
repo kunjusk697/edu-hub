@@ -114,4 +114,16 @@ describe("Le Mam admin API", () => {
     assert.equal(response.status, 200);
     assert.equal(response.body.price, 699);
   });
+
+  it("returns each product as an individual inventory row", async () => {
+    const response = await request("GET", "/api/admin/products", null, {
+      "x-admin-token": ADMIN_TOKEN,
+    });
+    assert.equal(response.status, 200);
+    assert.ok(response.body.length >= 90);
+    const sample = response.body.find((product) => product.id === "ss-pc-5l-ib");
+    assert.equal(sample.sku, "LMSSPC5IB");
+    assert.equal(sample.image, "/images/products/ss-pc-5l-ib.jpg");
+    assert.equal(sample.categoryId, "cookware");
+  });
 });

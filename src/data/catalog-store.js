@@ -25,12 +25,50 @@ function defaultSettings() {
   };
 }
 
+function syncIndividualProducts(catalog) {
+  const byId = new Map(catalog.products.map((product) => [product.id, product]));
+  const synced = [];
+
+  for (const seed of seedProducts) {
+    const existing = byId.get(seed.id);
+    if (existing) {
+      synced.push({
+        ...existing,
+        name: seed.name,
+        price: seed.price,
+        categoryId: seed.categoryId,
+        series: seed.series,
+        description: seed.description,
+        features: seed.features,
+        sku: seed.sku,
+        image: seed.image,
+      });
+      continue;
+    }
+
+    synced.push({ ...seed });
+  }
+
+  catalog.products = synced;
+  return catalog;
+}
+
 function loadCatalog() {
-  return readJson("catalog.json", {
+  const catalog = readJson("catalog.json", {
     products: seedProducts,
     slides: seedSlides,
     settings: defaultSettings(),
   });
+
+  catalog.settings = {
+    ...defaultSettings(),
+    ...catalog.settings,
+    contact: { ...defaultSettings().contact, ...(catalog.settings.contact || {}) },
+    promotion: { ...defaultSettings().promotion, ...(catalog.settings.promotion || {}) },
+    upi: { ...defaultSettings().upi, ...(catalog.settings.upi || {}) },
+  };
+
+  return syncIndividualProducts(catalog);
 }
 
 function saveCatalog(catalog) {
@@ -55,6 +93,7 @@ function saveExpenses(expenses) {
 
 module.exports = {
   defaultSettings,
+  syncIndividualProducts,
   loadCatalog,
   saveCatalog,
   loadOrders,

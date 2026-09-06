@@ -1,3 +1,5 @@
+const PRODUCT_SKUS = require("./product-skus");
+
 function product(id, name, price, categoryId, series, description, features = []) {
   return {
     id,
@@ -7,7 +9,8 @@ function product(id, name, price, categoryId, series, description, features = []
     series,
     description,
     features,
-    imageTheme: series.toLowerCase().replace(/\s+/g, "-"),
+    sku: PRODUCT_SKUS[id],
+    image: `/images/products/${id}.jpg`,
   };
 }
 
@@ -42,21 +45,21 @@ module.exports = [
   product("aura-casserole-24", "Aura Casserole 24 (Steel Lid)", 5650, "cookware", "Aura Series", "Tri-ply casserole stewpot", ["Induction safe", "5-Year Warranty"]),
 
   // B. Marvel Series Non-Stick & Granite Cookware
-  product("marvel-granite-tawa-280", "Premium Granite Tawa 280 IB", 1550, "bakeware", "Marvel Series", "Granite non-stick tawa", ["4-layer coating", "Metal spoon friendly", "1-Year Warranty"]),
-  product("marvel-granite-tawa-250", "Premium Granite Tawa 250 IB", 1250, "bakeware", "Marvel Series", "Granite non-stick tawa", ["4-layer coating", "Metal spoon friendly", "1-Year Warranty"]),
-  product("marvel-granite-kadai-260", "Premium Granite Kadai 260 IB", 2350, "bakeware", "Marvel Series", "Granite non-stick kadai", ["Extreme stick-proof", "1-Year Warranty"]),
-  product("marvel-granite-kadai-240", "Premium Granite Kadai 240 IB", 2150, "bakeware", "Marvel Series", "Granite non-stick kadai", ["Extreme stick-proof", "1-Year Warranty"]),
-  product("marvel-granite-frypan-260", "Premium Granite Fry Pan 260 IB", 1850, "bakeware", "Marvel Series", "Granite non-stick fry pan", ["4-layer coating", "1-Year Warranty"]),
-  product("marvel-granite-frypan-240", "Premium Granite Fry Pan 240 IB", 1550, "bakeware", "Marvel Series", "Granite non-stick fry pan", ["4-layer coating", "1-Year Warranty"]),
+  product("marvel-granite-tawa-280", "Premium Granite Tawa 280 IB", 1550, "cookware", "Marvel Series", "Granite non-stick tawa", ["4-layer coating", "Metal spoon friendly", "1-Year Warranty"]),
+  product("marvel-granite-tawa-250", "Premium Granite Tawa 250 IB", 1250, "cookware", "Marvel Series", "Granite non-stick tawa", ["4-layer coating", "Metal spoon friendly", "1-Year Warranty"]),
+  product("marvel-granite-kadai-260", "Premium Granite Kadai 260 IB", 2350, "cookware", "Marvel Series", "Granite non-stick kadai", ["Extreme stick-proof", "1-Year Warranty"]),
+  product("marvel-granite-kadai-240", "Premium Granite Kadai 240 IB", 2150, "cookware", "Marvel Series", "Granite non-stick kadai", ["Extreme stick-proof", "1-Year Warranty"]),
+  product("marvel-granite-frypan-260", "Premium Granite Fry Pan 260 IB", 1850, "cookware", "Marvel Series", "Granite non-stick fry pan", ["4-layer coating", "1-Year Warranty"]),
+  product("marvel-granite-frypan-240", "Premium Granite Fry Pan 240 IB", 1550, "cookware", "Marvel Series", "Granite non-stick fry pan", ["4-layer coating", "1-Year Warranty"]),
   product("marvel-appachatty-250", "Non-Stick Appachatty 250", 850, "bakeware", "Marvel Series", "South Indian appam maker", ["Non-stick coating", "1-Year Warranty"]),
   product("marvel-appachatty-prime-350", "Appachatty Prime 350", 950, "bakeware", "Marvel Series", "Premium appam maker", ["Non-stick coating", "1-Year Warranty"]),
   product("marvel-pathiri-round", "Non-Stick Pathiri Tawa Round", 2750, "bakeware", "Marvel Series", "Round pathiri tawa", ["Non-stick surface", "1-Year Warranty"]),
   product("marvel-pathiri-fold", "Non-Stick Pathiri Tawa Fold", 2950, "bakeware", "Marvel Series", "Foldable pathiri tawa", ["Non-stick surface", "1-Year Warranty"]),
   product("marvel-cookware-set-ktf", "Non-Stick Four Pcs Cookware Set KTF", 3490, "bakeware", "Marvel Series", "4-piece cookware set", ["Complete starter set", "1-Year Warranty"]),
-  product("marvel-biriyani-3-5", "Non-Stick Biriyani Pot 3.5Ltr", 2150, "bakeware", "Marvel Series", "Biriyani pot 3.5 litre", ["Non-stick interior", "1-Year Warranty"]),
-  product("marvel-biriyani-5", "Non-Stick Biriyani Pot 5Ltr", 2650, "bakeware", "Marvel Series", "Biriyani pot 5 litre", ["Non-stick interior", "1-Year Warranty"]),
-  product("marvel-biriyani-8", "Non-Stick Biriyani Pot 8Ltr", 2750, "bakeware", "Marvel Series", "Biriyani pot 8 litre", ["Non-stick interior", "1-Year Warranty"]),
-  product("marvel-biriyani-10", "Non-Stick Biriyani Pot 10Ltr", 2950, "bakeware", "Marvel Series", "Biriyani pot 10 litre", ["Non-stick interior", "1-Year Warranty"]),
+  product("marvel-biriyani-3-5", "Non-Stick Biriyani Pot 3.5Ltr", 2150, "cookware", "Marvel Series", "Biriyani pot 3.5 litre", ["Non-stick interior", "1-Year Warranty"]),
+  product("marvel-biriyani-5", "Non-Stick Biriyani Pot 5Ltr", 2650, "cookware", "Marvel Series", "Biriyani pot 5 litre", ["Non-stick interior", "1-Year Warranty"]),
+  product("marvel-biriyani-8", "Non-Stick Biriyani Pot 8Ltr", 2750, "cookware", "Marvel Series", "Biriyani pot 8 litre", ["Non-stick interior", "1-Year Warranty"]),
+  product("marvel-biriyani-10", "Non-Stick Biriyani Pot 10Ltr", 2950, "cookware", "Marvel Series", "Biriyani pot 10 litre", ["Non-stick interior", "1-Year Warranty"]),
 
   // C. Pressure Cookers
   product("ss-pc-3l-ib", "SS Pressure Cooker 3Ltr IB", 3490, "cookware", "Pressure Cooker", "Stainless steel pressure cooker 3L", ["1-Year Warranty", "Induction base"]),

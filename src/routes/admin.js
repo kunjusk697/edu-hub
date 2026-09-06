@@ -1,4 +1,5 @@
 const express = require("express");
+const { syncIndividualProducts } = require("../data/catalog-store");
 
 const ADMIN_TOKEN = process.env.LKM_ADMIN_TOKEN || "lemam-admin-demo";
 
@@ -29,6 +30,15 @@ function adminRouter({ catalog, saveCatalog, orders, saveOrders, expenses, saveE
       formattedSalesTotal: formatPrice(salesTotal),
       formattedExpenseTotal: formatPrice(expenseTotal),
       formattedProfit: formatPrice(salesTotal - expenseTotal),
+    });
+  });
+
+  router.post("/catalog/sync", (_req, res) => {
+    syncIndividualProducts(catalog);
+    saveCatalog(catalog);
+    res.json({
+      productCount: catalog.products.length,
+      message: "Catalog synced as individual product entries",
     });
   });
 

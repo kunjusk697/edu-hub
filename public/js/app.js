@@ -2,11 +2,15 @@ const state = {
   appInfo: null,
   categories: [],
   activeCategory: "cookware",
-  activePanel: "cart",
+  activeFilter: "all",
+  menuProducts: [],
+  quantities: {},
+  searchQuery: "",
 };
 
 const screens = [...document.querySelectorAll("[data-screen]")];
 const navButtons = [...document.querySelectorAll(".bottom-nav [data-screen]")];
+const bottomNav = document.getElementById("bottom-nav");
 
 function formatCurrency(price) {
   return new Intl.NumberFormat("en-IN", {
@@ -14,6 +18,10 @@ function formatCurrency(price) {
     currency: "INR",
     maximumFractionDigits: 0,
   }).format(price);
+}
+
+function pseudoRating(product) {
+  return (4 + (product.price % 9) / 10).toFixed(1);
 }
 
 async function api(path, options) {
@@ -24,62 +32,154 @@ async function api(path, options) {
   return response.json();
 }
 
-function productCard(product) {
+function showScreen(name) {
+  screens.forEach((screen) => {
+    screen.classList.toggle("active", screen.dataset.screen === name);
+  });
+
+  const showNav = name !== "welcome" && name !== "menu";
+  bottomNav.hidden = !showNav;
+
+  navButtons.forEach((button) => {
+    button.classList.toggle("active", button.dataset.screen === name);
+  });
+
+  document.getElementById("menu-add-cart").style.display =
+    name === "menu" ? "block" : "none";
+}
+
+function categoryPill(category) {
   return `
-    <article class="product-card">
-      <div class="product-visual" style="background: linear-gradient(135deg, ${product.categoryColor}, #1f1f1f);">
-        <small>${product.series}</small>
+    <button class="category-pill" data-category="${category.id}" type="button">
+      <div class="cat-icon" style="background:${category.color}22">${category.icon}</div>
+      <span>${category.name}</span>
+    </button>
+  `;
+}
+
+function topProductCard(product) {
+  return `
+    <article class="top-product-card" data-open-category="${product.categoryId}">
+      <div class="top-product-visual" style="background:linear-gradient(135deg,${product.categoryColor},#333)">
+        <span class="rating">⭐ ${pseudoRating(product)}</span>
         <span>${product.categoryIcon}</span>
       </div>
-      <div class="product-body">
+      <div class="top-product-body">
         <strong>${product.name}</strong>
-        <span>${product.categoryName}</span>
-        <div class="price">${product.formattedPrice}</div>
-        <div class="card-actions">
-          <button class="btn-secondary" data-wishlist="${product.id}">Wishlist</button>
-          <button class="btn-primary" data-cart="${product.id}">Add to cart</button>
+        <span class="series">${product.series}</span>
+        <div class="price-row">
+          <span class="price">${product.formattedPrice}</span>
         </div>
       </div>
     </article>
   `;
 }
 
-function categoryCard(category) {
+function menuItem(product) {
+  const qty = state.quantities[product.id] || 0;
   return `
-    <button class="category-card" data-category="${category.id}" type="button">
-      <div class="category-icon" style="background:${category.color}22;color:${category.color}">
-        ${category.icon}
+    <article class="menu-item" data-product-id="${product.id}">
+      <div class="menu-item-thumb" style="background:linear-gradient(135deg,${product.categoryColor},#444)">
+        ${product.categoryIcon}
       </div>
-      <strong>${category.name}</strong>
-      <span>${category.productCount} products</span>
-    </button>
+      <div class="menu-item-info">
+        <strong>${product.name}</strong>
+        <p>${product.description}</p>
+        <span class="rating">⭐ ${pseudoRating(product)}</span>
+      </div>
+      <div class="menu-item-actions">
+        <span class="price">${product.formattedPrice}</span>
+        <div class="qty-control">
+          <button type="button" data-qty-minus="${product.id}" aria-label="Decrease">−</button>
+          <span>${qty}</span>
+          <button type="button" data-qty-plus="${product.id}" aria-label="Increase">+</button>
+        </div>
+      </div>
+    </article>
   `;
 }
 
-function showScreen(name) {
-  screens.forEach((screen) => {
-    screen.classList.toggle("active", screen.dataset.screen === name);
+function renderMenuList() {
+  let products = [...state.menuProducts];
+
+  if (state.activeFilter === "best") {
+    products = products.filter((product) => product.price >= 1500);
+  } else if (state.activeFilter !== "all") {
+    products = products.filter((product) => product.series === state.activeFilter);
+  }
+
+  if (state.searchQuery) {
+    const query = state.searchQuery.toLowerCase();
+    products = products.filter(
+      (product) =>
+        product.name.toLowerCase().includes(query) ||
+        product.series.toLowerCase().includes(query)
+    );
+  }
+
+  document.getElementById("category-products").innerHTML = products.length
+    ? products.map(menuItem).join("")
+    : `<p class="empty-state">No products match this filter.</p>`;
+
+  bindQuantityControls();
+}
+
+async function loadCategoryProducts(categoryId) {
+  state.activeCategory = categoryId;
+  const category = state.categories.find((item) => item.id === categoryId);
+  const products = await api(`/api/products?category=${categoryId}`);
+
+  state.menuProducts = products;
+  document.getElementById("menu-title").textContent = category ? category.name : "Catalog";
+  document.getElementById("menu-section-title").textContent = `Best in ${category ? category.name : "Products"}`;
+
+  renderMenuList();
+  showScreen("menu");
+}
+
+function bindQuantityControls() {
+  document.querySelectorAll("[data-qty-plus]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const id = button.dataset.qtyPlus;
+      state.quantities[id] = (state.quantities[id] || 0) + 1;
+      renderMenuList();
+    });
   });
-  navButtons.forEach((button) => {
-    button.classList.toggle("active", button.dataset.screen === name);
+
+  document.querySelectorAll("[data-qty-minus]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const id = button.dataset.qtyMinus;
+      state.quantities[id] = Math.max(0, (state.quantities[id] || 0) - 1);
+      renderMenuList();
+    });
   });
 }
 
-function showPanel(name) {
-  state.activePanel = name;
-  document.querySelectorAll(".profile-tabs button").forEach((button) => {
-    button.classList.toggle("active", button.dataset.panel === name);
-  });
-  ["cart", "wishlist", "orders"].forEach((panel) => {
-    document.getElementById(`panel-${panel}`).hidden = panel !== name;
-  });
+async function addMenuSelectionsToCart() {
+  const selected = Object.entries(state.quantities).filter(([, qty]) => qty > 0);
+
+  if (!selected.length) {
+    return;
+  }
+
+  for (const [productId, quantity] of selected) {
+    await api(`/api/cart/${productId}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ quantity }),
+    });
+  }
+
+  state.quantities = {};
+  await refreshLists();
+  showScreen("profile");
 }
 
 async function refreshLists() {
   const [cart, wishlist] = await Promise.all([api("/api/cart"), api("/api/wishlist")]);
 
   document.getElementById("panel-cart").innerHTML = cart.items.length
-    ? `<ul>${cart.items
+    ? `<h3>Your Cart</h3><ul>${cart.items
         .map(
           (item) =>
             `<li><strong>${item.name}</strong> × ${item.quantity} — ${formatCurrency(
@@ -87,7 +187,7 @@ async function refreshLists() {
             )}</li>`
         )
         .join("")}</ul><p><strong>Total:</strong> ${cart.formattedTotal}</p>`
-    : `<p class="empty-state">Your cart is empty. Add Aura cookware or Chop Magic choppers from the catalog.</p>`;
+    : `<p class="empty-state">Your cart is empty. Browse Aura cookware or Chop Magic choppers.</p>`;
 
   document.getElementById("panel-wishlist").innerHTML = wishlist.length
     ? `<ul>${wishlist
@@ -96,46 +196,29 @@ async function refreshLists() {
     : `<p class="empty-state">Save Vacuum Flasks, Puttu Makers, or Tri-Ply pans to your wishlist.</p>`;
 
   document.getElementById("panel-orders").innerHTML =
-    `<p class="empty-state">No orders yet. Guest checkout history will appear here after your first purchase.</p>`;
+    `<p class="empty-state">No orders yet. Your checkout history will appear here.</p>`;
 }
 
-async function loadCategoryProducts(categoryId) {
-  state.activeCategory = categoryId;
-  const products = await api(`/api/products?category=${categoryId}`);
-  document.getElementById("category-products").innerHTML = products.length
-    ? products.map(productCard).join("")
-    : `<p class="empty-state">No products in this category yet.</p>`;
-  document.querySelectorAll("#category-sidebar button").forEach((button) => {
-    button.classList.toggle("active", button.dataset.category === categoryId);
-  });
-  bindProductActions();
-}
+async function runSearch() {
+  state.searchQuery = document.getElementById("search-input").value.trim();
+  if (!state.searchQuery) {
+    return;
+  }
 
-function bindProductActions() {
-  document.querySelectorAll("[data-cart]").forEach((button) => {
-    button.addEventListener("click", async () => {
-      await api(`/api/cart/${button.dataset.cart}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ quantity: 1 }),
-      });
-      await refreshLists();
-      showScreen("profile");
-      showPanel("cart");
-    });
-  });
-
-  document.querySelectorAll("[data-wishlist]").forEach((button) => {
-    button.addEventListener("click", async () => {
-      await api(`/api/wishlist/${button.dataset.wishlist}`, { method: "POST" });
-      await refreshLists();
-      showScreen("profile");
-      showPanel("wishlist");
-    });
-  });
+  const products = await api(`/api/products?search=${encodeURIComponent(state.searchQuery)}`);
+  if (products.length) {
+    state.menuProducts = products;
+    state.activeCategory = products[0].categoryId;
+    document.getElementById("menu-title").textContent = "Search Results";
+    document.getElementById("menu-section-title").textContent = `Results for "${state.searchQuery}"`;
+    renderMenuList();
+    showScreen("menu");
+  }
 }
 
 async function init() {
+  bottomNav.hidden = true;
+
   const [appInfo, categories, featured] = await Promise.all([
     api("/api/app-info"),
     api("/api/categories"),
@@ -145,77 +228,117 @@ async function init() {
   state.appInfo = appInfo;
   state.categories = categories;
 
-  document.getElementById("brand-name").textContent = appInfo.brandName;
-  document.getElementById("brand-tagline").textContent = `${appInfo.tagline} / ${appInfo.subtitle}`;
+  document.getElementById("welcome-brand").textContent = appInfo.brandName;
+  document.getElementById("location-label").textContent = "Ernakulam, IN";
+  document.getElementById("menu-location").textContent = "Ernakulam";
+
   document.getElementById("hero-banner").innerHTML = `
-    <span class="hero-badge">${appInfo.promotion.badge}</span>
-    <h2>${appInfo.promotion.title}</h2>
-    <p>${appInfo.promotion.subtitle}</p>
+    <div>
+      <h3>Ready To Order Your Favorite Kitchenware</h3>
+      <p>${appInfo.promotion.subtitle}</p>
+      <button class="promo-btn" id="promo-shop" type="button">Shop Now</button>
+    </div>
+    <div class="promo-visual">🍳</div>
   `;
 
   document.getElementById("home-categories").innerHTML = categories
     .filter((category) => category.productCount > 0)
-    .slice(0, 6)
-    .map(categoryCard)
+    .slice(0, 8)
+    .map(categoryPill)
     .join("");
 
-  document.getElementById("recommended-products").innerHTML = featured.map(productCard).join("");
-
-  document.getElementById("category-sidebar").innerHTML = categories
-    .map(
-      (category) =>
-        `<button type="button" data-category="${category.id}">${category.name}</button>`
-    )
-    .join("");
+  document.getElementById("recommended-products").innerHTML = featured.map(topProductCard).join("");
 
   document.getElementById("profile-email").value = appInfo.contact.email;
   document.getElementById("profile-phone").value = appInfo.contact.phone;
   document.getElementById("profile-address").value = appInfo.contact.address;
 
+  document.getElementById("welcome-start").addEventListener("click", () => {
+    localStorage.setItem("lkm-welcome-seen", "1");
+    showScreen("home");
+  });
+
+  const skipWelcome =
+    localStorage.getItem("lkm-welcome-seen") ||
+    new URLSearchParams(window.location.search).has("skipWelcome");
+
+  if (skipWelcome) {
+    showScreen("home");
+  }
+
+  document.getElementById("promo-shop").addEventListener("click", async () => {
+    await loadCategoryProducts("cookware");
+  });
+
   document.getElementById("support-button").addEventListener("click", () => {
     window.location.href = `tel:${appInfo.contact.phone.replace(/\s/g, "")}`;
   });
 
-  document.querySelectorAll("#home-categories [data-category]").forEach((button) => {
+  document.getElementById("search-button").addEventListener("click", runSearch);
+  document.getElementById("search-input").addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      runSearch();
+    }
+  });
+
+  document.querySelectorAll("[data-category]").forEach((button) => {
     button.addEventListener("click", async () => {
-      showScreen("category");
       await loadCategoryProducts(button.dataset.category);
     });
   });
 
-  document.querySelectorAll("#category-sidebar [data-category]").forEach((button) => {
+  document.querySelectorAll("[data-open-category]").forEach((card) => {
+    card.addEventListener("click", async () => {
+      await loadCategoryProducts(card.dataset.openCategory);
+    });
+  });
+
+  document.querySelectorAll("[data-screen-jump]").forEach((button) => {
     button.addEventListener("click", async () => {
-      await loadCategoryProducts(button.dataset.category);
+      const target = button.dataset.screenJump;
+      if (target === "menu") {
+        await loadCategoryProducts(state.activeCategory);
+      } else {
+        showScreen(target);
+        if (target === "wishlist" || target === "orders" || target === "profile") {
+          await refreshLists();
+        }
+      }
     });
   });
 
   navButtons.forEach((button) => {
     button.addEventListener("click", async () => {
       showScreen(button.dataset.screen);
-      if (button.dataset.screen === "category") {
-        await loadCategoryProducts(state.activeCategory);
-      }
-      if (button.dataset.screen === "profile") {
-        await refreshLists();
-      }
-    });
-  });
-
-  document.querySelectorAll(".profile-tabs button").forEach((button) => {
-    button.addEventListener("click", async () => {
-      showPanel(button.dataset.panel);
       await refreshLists();
     });
   });
 
+  document.querySelectorAll(".filter-chip").forEach((chip) => {
+    chip.addEventListener("click", () => {
+      state.activeFilter = chip.dataset.filter;
+      document.querySelectorAll(".filter-chip").forEach((item) => {
+        item.classList.toggle("active", item === chip);
+      });
+      renderMenuList();
+    });
+  });
+
+  document.getElementById("menu-add-cart").addEventListener("click", addMenuSelectionsToCart);
+  document.getElementById("cart-shortcut").addEventListener("click", async () => {
+    await refreshLists();
+  });
+
   document.getElementById("profile-form").addEventListener("submit", (event) => {
     event.preventDefault();
-    const email = document.getElementById("profile-email").value;
-    localStorage.setItem("lkm-profile", JSON.stringify({
-      email,
-      phone: document.getElementById("profile-phone").value,
-      address: document.getElementById("profile-address").value,
-    }));
+    localStorage.setItem(
+      "lkm-profile",
+      JSON.stringify({
+        email: document.getElementById("profile-email").value,
+        phone: document.getElementById("profile-phone").value,
+        address: document.getElementById("profile-address").value,
+      })
+    );
     document.getElementById("profile-subtitle").textContent = "Profile saved for guest checkout.";
   });
 
@@ -227,12 +350,10 @@ async function init() {
     document.getElementById("profile-address").value = profile.address;
   }
 
-  bindProductActions();
-  await loadCategoryProducts("appliances");
   await refreshLists();
 }
 
 init().catch((error) => {
   console.error(error);
-  document.body.innerHTML = `<p class="empty-state">Unable to load Le Kitchen Master catalog.</p>`;
+  document.body.innerHTML = `<p class="empty-state">Unable to load Le Kitchen Master.</p>`;
 });

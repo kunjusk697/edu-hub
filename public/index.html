@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Le Kitchen Master</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand-block">
+          <h1 id="brand-name">Le Kitchen Master</h1>
+          <p id="brand-tagline">Health is homemade</p>
+        </div>
+        <button class="icon-button" id="support-button" aria-label="Support">☎</button>
+      </header>
+
+      <main>
+        <section class="screen active" id="screen-home" data-screen="home">
+          <div class="hero" id="hero-banner"></div>
+          <h2 class="section-title">Shop by Category</h2>
+          <div class="category-grid" id="home-categories"></div>
+          <h2 class="section-title">Recommended Products</h2>
+          <div class="product-grid" id="recommended-products"></div>
+        </section>
+
+        <section class="screen" id="screen-category" data-screen="category">
+          <h2 class="section-title">Browse Catalog</h2>
+          <div class="category-layout">
+            <div class="sidebar" id="category-sidebar"></div>
+            <div class="product-grid" id="category-products"></div>
+          </div>
+        </section>
+
+        <section class="screen" id="screen-profile" data-screen="profile">
+          <div class="profile-card">
+            <h2>Guest Account</h2>
+            <p id="profile-subtitle">Manage cart, wishlist, orders, and shipping details.</p>
+          </div>
+
+          <div class="profile-tabs">
+            <button type="button" data-panel="cart" class="active">Cart</button>
+            <button type="button" data-panel="wishlist">Wishlist</button>
+            <button type="button" data-panel="orders">Orders</button>
+          </div>
+
+          <div class="list-card" id="panel-cart"></div>
+          <div class="list-card" id="panel-wishlist" hidden></div>
+          <div class="list-card" id="panel-orders" hidden></div>
+
+          <div class="form-card">
+            <h3>Profile & Shipping</h3>
+            <form id="profile-form">
+              <label>
+                Email Address
+                <input id="profile-email" name="email" type="email" required />
+              </label>
+              <label>
+                Phone No.
+                <input id="profile-phone" name="phone" type="tel" required />
+              </label>
+              <label>
+                Save Address
+                <textarea id="profile-address" name="address" rows="3" required></textarea>
+              </label>
+              <button class="btn-primary" type="submit">Save profile</button>
+            </form>
+          </div>
+        </section>
+      </main>
+
+      <nav class="bottom-nav" aria-label="Primary">
+        <button type="button" data-screen="home" class="active">Home</button>
+        <button type="button" data-screen="category">Categories</button>
+        <button type="button" data-screen="profile">Profile</button>
+      </nav>
+    </div>
+
+    <script src="/js/app.js" type="module"></script>
+  </body>
+</html>

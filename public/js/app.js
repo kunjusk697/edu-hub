@@ -261,13 +261,90 @@ function categoryPill(category) {
   `;
 }
 
+function initSlideshow(slides) {
+  const track = document.getElementById("slideshow-track");
+  const dots = document.getElementById("slideshow-dots");
+  let activeIndex = 0;
+  let timerId = null;
+
+  track.innerHTML = slides
+    .map(
+      (slide, index) => `
+        <article class="slideshow-slide" data-slide-index="${index}">
+          <img src="${slide.image}" alt="${slide.title}" loading="${index === 0 ? "eager" : "lazy"}" />
+          <div class="slideshow-caption">
+            <h3>${slide.title}</h3>
+            <p>${slide.subtitle}</p>
+            <button class="promo-btn" data-slide-shop="${index}" type="button">Shop Now</button>
+          </div>
+        </article>
+      `
+    )
+    .join("");
+
+  dots.innerHTML = slides
+    .map(
+      (_, index) =>
+        `<button class="slideshow-dot${index === 0 ? " active" : ""}" data-slide-dot="${index}" type="button" aria-label="Go to slide ${index + 1}"></button>`
+    )
+    .join("");
+
+  function goToSlide(index) {
+    activeIndex = (index + slides.length) % slides.length;
+    track.style.transform = `translateX(-${activeIndex * 100}%)`;
+    dots.querySelectorAll(".slideshow-dot").forEach((dot, dotIndex) => {
+      dot.classList.toggle("active", dotIndex === activeIndex);
+    });
+  }
+
+  function startAutoPlay() {
+    clearInterval(timerId);
+    timerId = setInterval(() => {
+      goToSlide(activeIndex + 1);
+    }, 4500);
+  }
+
+  dots.querySelectorAll("[data-slide-dot]").forEach((dot) => {
+    dot.addEventListener("click", () => {
+      goToSlide(Number(dot.dataset.slideDot));
+      startAutoPlay();
+    });
+  });
+
+  track.querySelectorAll("[data-slide-shop]").forEach((button) => {
+    button.addEventListener("click", async () => {
+      const slide = slides[Number(button.dataset.slideShop)];
+      if (slide.series) {
+        state.activeFilter = slide.series;
+        document.querySelectorAll(".filter-chip").forEach((chip) => {
+          chip.classList.toggle("active", chip.dataset.filter === slide.series);
+        });
+      } else {
+        state.activeFilter = "all";
+        document.querySelectorAll(".filter-chip").forEach((chip) => {
+          chip.classList.toggle("active", chip.dataset.filter === "all");
+        });
+      }
+      await loadCategoryProducts(slide.categoryId);
+    });
+  });
+
+  const bar = document.getElementById("slideshow-bar");
+  bar.addEventListener("mouseenter", () => clearInterval(timerId));
+  bar.addEventListener("mouseleave", startAutoPlay);
+
+  goToSlide(0);
+  startAutoPlay();
+}
+
 async function init() {
   bottomNav.hidden = true;
 
-  const [appInfo, categories, featured] = await Promise.all([
+  const [appInfo, categories, featured, slides] = await Promise.all([
     api("/api/app-info"),
     api("/api/categories"),
     api("/api/products?featured=true"),
+    api("/api/slides"),
   ]);
 
   state.appInfo = appInfo;
@@ -277,14 +354,7 @@ async function init() {
   document.getElementById("location-label").textContent = "Ernakulam, IN";
   document.getElementById("menu-location").textContent = "Ernakulam";
 
-  document.getElementById("hero-banner").innerHTML = `
-    <div>
-      <h3>Ready To Order Your Favorite Kitchenware</h3>
-      <p>${appInfo.promotion.subtitle}</p>
-      <button class="promo-btn" id="promo-shop" type="button">Shop Now</button>
-    </div>
-    <div class="promo-visual">🍳</div>
-  `;
+  initSlideshow(slides);
 
   document.getElementById("home-categories").innerHTML = categories
     .filter((category) => category.productCount > 0)
@@ -310,10 +380,6 @@ async function init() {
   if (skipWelcome) {
     showScreen("home");
   }
-
-  document.getElementById("promo-shop").addEventListener("click", async () => {
-    await loadCategoryProducts("cookware");
-  });
 
   document.getElementById("support-button").addEventListener("click", () => {
     window.location.href = `tel:${appInfo.contact.phone.replace(/\s/g, "")}`;

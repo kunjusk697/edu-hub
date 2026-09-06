@@ -4,6 +4,7 @@ const path = require("path");
 const appInfo = require("./data/app-info");
 const categories = require("./data/categories");
 const products = require("./data/products");
+const slides = require("./data/slides");
 const { imageForProduct, skuForProduct } = require("./data/product-images");
 
 const app = express();
@@ -44,6 +45,10 @@ app.get("/api/health", (_req, res) => {
 
 app.get("/api/app-info", (_req, res) => {
   res.json(appInfo);
+});
+
+app.get("/api/slides", (_req, res) => {
+  res.json(slides);
 });
 
 app.get("/api/categories", (_req, res) => {

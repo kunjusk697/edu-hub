@@ -87,6 +87,13 @@ describe("Le Kitchen Master API", () => {
     assert.ok(response.body.every((product) => product.categoryId === "appliances"));
   });
 
+  it("lists homepage slideshow slides", async () => {
+    const response = await request("GET", "/api/slides");
+    assert.equal(response.status, 200);
+    assert.ok(response.body.length >= 3);
+    assert.ok(response.body.some((slide) => slide.image.includes("/images/slideshow/")));
+  });
+
   it("returns product with brochure image and sku", async () => {
     const response = await request("GET", "/api/products/aura-kadai-22-glass");
     assert.equal(response.status, 200);

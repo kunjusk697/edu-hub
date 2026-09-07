@@ -1,4 +1,4 @@
-const images: Record<string, ReturnType<typeof require>> = {
+const images: Record<string, number> = {
   'aura-kadai-22-glass': require('../assets/products/aura-kadai-22-glass.jpg'),
   'aura-kadai-22-steel': require('../assets/products/aura-kadai-22-steel.jpg'),
   'aura-kadai-24-glass': require('../assets/products/aura-kadai-24-glass.jpg'),

@@ -7,7 +7,7 @@ export const careTips = [
   {
     id: 'granite',
     title: 'Marvel granite (non-stick)',
-    body: 'Marvel granite tawas and kadais are metal-spoon friendly on the 4-layer coating. Still avoid cutting food in the pan and skip abrasive powders. Hand-wash or use a soft sponge to keep the 1-year surface warranty valid.',
+    body: 'The brochure granite line is induction-base and metal-spoon friendly (“use metal spoon without hesitation”). Still avoid cutting food in the pan and skip abrasive powders so the 1-year surface warranty stays valid.',
   },
   {
     id: 'induction',

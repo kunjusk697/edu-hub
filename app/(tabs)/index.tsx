@@ -1,11 +1,18 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { ProductCard } from '@/components/ProductCard';
 import { SearchBar } from '@/components/SearchBar';
 import { SectionHeader } from '@/components/SectionHeader';
 import { colors, radius } from '@/constants/theme';
-import { homeCollections, products, type CategorySlug, type HomeCollection } from '@/data/products';
+import {
+  catalogTags,
+  homeCollections,
+  products,
+  type CategorySlug,
+  type HomeCollection,
+} from '@/data/products';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const featured: { slug: CategorySlug; title: string; line: string; color: string }[] = [
@@ -17,8 +24,12 @@ const featured: { slug: CategorySlug; title: string; line: string; color: string
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const bestsellers = products.filter((p) => p.badge === 'Bestseller');
+  const [tagId, setTagId] = useState('aura');
   const seasonal = products.find((p) => p.id === 'aura-kadai-frypan');
+  const tagged = useMemo(() => {
+    const tag = catalogTags.find((t) => t.id === tagId) ?? catalogTags[0];
+    return products.filter(tag.match).slice(0, 8);
+  }, [tagId]);
 
   return (
     <ScrollView
@@ -83,9 +94,19 @@ export default function HomeScreen() {
           </Pressable>
         </View>
 
-        <SectionHeader title="Bestsellers" subtitle="Tagged from the catalog" />
+        <SectionHeader title="Tagged from the catalog" subtitle="Brochure SKUs and printed MRPs" />
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chips}>
+          {catalogTags.map((t) => (
+            <Pressable
+              key={t.id}
+              onPress={() => setTagId(t.id)}
+              style={[styles.chip, tagId === t.id && styles.chipOn]}>
+              <Text style={[styles.chipText, tagId === t.id && styles.chipTextOn]}>{t.label}</Text>
+            </Pressable>
+          ))}
+        </ScrollView>
         <View style={styles.cards}>
-          {bestsellers.map((p) => (
+          {tagged.map((p) => (
             <View key={p.id} style={styles.cardWrap}>
               <ProductCard product={p} />
             </View>
@@ -160,4 +181,16 @@ const styles = StyleSheet.create({
   wBtnText: { color: '#fff', fontWeight: '700', fontSize: 12 },
   cards: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 },
   cardWrap: { width: '48%', flexGrow: 1 },
+  chips: { gap: 8, paddingBottom: 14 },
+  chip: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: radius.pill,
+    backgroundColor: colors.ivory,
+    borderWidth: 1,
+    borderColor: colors.line,
+  },
+  chipOn: { backgroundColor: colors.brown, borderColor: colors.brown },
+  chipText: { color: colors.text, fontSize: 12, fontWeight: '700' },
+  chipTextOn: { color: '#fff' },
 });

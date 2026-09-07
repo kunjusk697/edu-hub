@@ -5,8 +5,8 @@ import { productImage } from '@/data/productImages';
 import { formatInr, priceOf, type Product } from '@/data/products';
 
 const badgeColor: Record<string, string> = {
-  Bestseller: colors.badgeBestseller,
-  'Top Pick': colors.badgeTop,
+  '1-Year Warranty': colors.badgeTop,
+  '2-Year Warranty': colors.badgeBestseller,
   '5-Year Warranty': colors.badgeWarranty,
   Seasonal: colors.badgeSeasonal,
 };
@@ -27,7 +27,7 @@ export function ProductCard({ product, compact }: { product: Product; compact?: 
           ) : null}
         </View>
         <View style={styles.body}>
-          <Text style={styles.series}>{product.series}</Text>
+          <Text style={styles.series}>{product.sku}</Text>
           <Text style={styles.name} numberOfLines={2}>
             {product.name}
           </Text>

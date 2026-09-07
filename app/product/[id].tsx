@@ -33,7 +33,7 @@ export default function ProductScreen() {
           ) : null}
         </View>
         <View style={styles.body}>
-          <Text style={styles.series}>{product.series} · {product.material}</Text>
+          <Text style={styles.series}>{product.sku} · {product.series} · {product.material}</Text>
           <Text style={styles.name}>{product.name}</Text>
           <View style={styles.priceRow}>
             <Text style={styles.price}>{formatInr(price)}</Text>

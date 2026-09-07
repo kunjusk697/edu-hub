@@ -3,15 +3,11 @@ import Link from "next/link";
 export default function WelcomePage() {
   return (
     <section className="welcome">
-      <div className="hero-brand">
-        <img src="/logo.jpg" alt="Eduin Global Skill Club" />
+      <img className="welcome-mark" src="/logo.jpg" alt="Eduin Global Skill Club" />
+      <div className="hero-flyer">
+        <img src="/hero.jpg" alt="Skill Club admissions" />
       </div>
-      <h1>
-        Learning
-        <br />
-        can be fun!
-      </h1>
-      <p>Free course for students</p>
+      <p className="welcome-tag">Building skills for life</p>
       <Link href="/home" className="welcome-next" aria-label="Continue">
         →
       </Link>

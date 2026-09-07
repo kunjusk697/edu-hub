@@ -1,0 +1,36 @@
+{
+  "name": "Eduin Global",
+  "install": "bash .cursor/scripts/install.sh",
+  "start": "bash .cursor/scripts/start.sh",
+  "terminals": [
+    {
+      "name": "api",
+      "command": "cd backend && npm run start:dev",
+      "description": "NestJS API on port 4000"
+    },
+    {
+      "name": "admin",
+      "command": "cd admin && npm run dev",
+      "description": "Admin dashboard on port 3000"
+    },
+    {
+      "name": "student",
+      "command": "cd student && npm run dev",
+      "description": "Student app on port 3001"
+    }
+  ],
+  "ports": [
+    {
+      "name": "api",
+      "port": 4000
+    },
+    {
+      "name": "admin",
+      "port": 3000
+    },
+    {
+      "name": "student",
+      "port": 3001
+    }
+  ]
+}

@@ -6,8 +6,6 @@ Eduin Global learning platform.
 
 NestJS API in `backend/` with Prisma and PostgreSQL.
 
-### Setup
-
 ```bash
 cd backend
 cp .env.example .env
@@ -18,4 +16,19 @@ npx prisma migrate dev --name init
 npm run start:dev
 ```
 
-The API listens on `PORT` (default `4000`). `GET /health` returns `{ "status": "ok" }`.
+The API listens on `PORT` (default `4000`).
+
+Auth: `POST /auth/register`, `POST /auth/login`.
+
+## Admin
+
+Next.js 15 app in `admin/`.
+
+```bash
+cd admin
+cp .env.example .env.local
+npm install
+npm run dev
+```
+
+`NEXT_PUBLIC_API_URL` defaults to `http://localhost:4000`.

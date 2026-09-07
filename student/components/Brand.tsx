@@ -6,20 +6,22 @@ export function BrandMark({
   return (
     <svg
       className={className}
-      viewBox="0 0 64 96"
+      viewBox="0 0 80 120"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
     >
       <path
-        d="M10 30 L32 8 L54 30"
+        d="M12 36 L40 8 L68 36"
         stroke="#FF6B00"
-        strokeWidth="10"
+        strokeWidth="12"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <path d="M26 34 L34 30 V86 H46 V34 H38 L34 30 Z" fill="#FF6B00" />
-      <path d="M22 86 H50" stroke="#FF6B00" strokeWidth="8" strokeLinecap="round" />
+      <path
+        fill="#FF6B00"
+        d="M28 44 L44 36 V96 H58 V108 H22 V96 H36 V52 L28 56 Z"
+      />
     </svg>
   );
 }

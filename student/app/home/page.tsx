@@ -13,7 +13,6 @@ type Course = {
   description?: string | null;
   programme?: { name?: string; mentor?: { user?: { name?: string } } };
   modules?: { sessions?: { startsAt?: string | null; meetingUrl?: string | null }[] }[];
-  enrollments?: unknown[];
 };
 
 type Mentor = {
@@ -21,14 +20,20 @@ type Mentor = {
   user: { name: string };
 };
 
-const teacherPhotos = [
-  "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80",
-  "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80",
-  "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=200&q=80",
-  "https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?auto=format&fit=crop&w=200&q=80"
+const skills = [
+  "Speak",
+  "Lead",
+  "Create",
+  "Code",
+  "English",
+  "Maths",
+  "Art",
+  "Sport",
+  "Values",
+  "Money",
+  "Science",
+  "Life"
 ];
-
-const tags = ["Hindi", "English", "Bangla", "Arabic"];
 
 export default function HomePage() {
   const [courses, setCourses] = useState<Course[]>([]);
@@ -53,11 +58,11 @@ export default function HomePage() {
   const start = nextSession?.startsAt ? new Date(nextSession.startsAt) : null;
   const weekday = start
     ? start.toLocaleDateString("en-US", { weekday: "short" }).toUpperCase()
-    : "MON";
-  const day = start ? String(start.getDate()).padStart(2, "0") : "24";
+    : "SAT";
+  const day = start ? String(start.getDate()).padStart(2, "0") : "12";
   const time = start
     ? start.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })
-    : "14:30 PM";
+    : "10:00 AM";
 
   return (
     <section className="home">
@@ -66,19 +71,33 @@ export default function HomePage() {
           ☰
         </button>
         <BrandMark className="home-brand" />
-        <img
-          className="avatar"
-          alt="You"
-          src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=120&q=80"
-        />
+        <img className="avatar" alt="Skill Club" src="/hero.jpg" />
       </div>
 
       <div className="search">
         <span>⌕</span>
-        <input placeholder="Find Best Online School" />
+        <input placeholder="Find a skill for your child" />
         <div className="search-tools">
-          <span>🔍</span>
           <span className="mic">🎤</span>
+        </div>
+      </div>
+
+      <div className="club-banner">
+        <img src="/hero.jpg" alt="Skill Club kids" />
+      </div>
+
+      <div className="club-stats">
+        <div>
+          <b>365</b>
+          <span>Days</span>
+        </div>
+        <div>
+          <b>12</b>
+          <span>Core skills</span>
+        </div>
+        <div>
+          <b>100+</b>
+          <span>Life skills</span>
         </div>
       </div>
 
@@ -97,21 +116,16 @@ export default function HomePage() {
           </div>
           <div className="class-meta">
             {weekday} {time} || Zoom
-            <div className="chip">
-              {nextCourse?.programme?.name || "UI/UX Design"}
-            </div>
+            <div className="chip">Ages 6–12</div>
           </div>
         </div>
         <h3>
-          {nextCourse?.description ||
-            nextCourse?.title ||
-            "UX & Web Design Course"}
+          {nextCourse?.title || "Skill Club"}
         </h3>
+        <p className="class-sub">Building skills for life</p>
         <div className="class-bottom">
           <div className="faces">
-            <img alt="" src={teacherPhotos[0]} />
-            <img alt="" src={teacherPhotos[1]} />
-            <img alt="" src={teacherPhotos[2]} />
+            <img alt="" src="/hero.jpg" />
             <span className="more">+8</span>
           </div>
           {nextCourse ? (
@@ -125,16 +139,29 @@ export default function HomePage() {
       </article>
 
       <div className="section-head" style={{ marginTop: 28 }}>
-        <h2>Best Teacher</h2>
+        <h2>12 Core Skills</h2>
+        <span className="view-all">View all</span>
+      </div>
+
+      <div className="skill-grid">
+        {skills.map((skill) => (
+          <span className="skill-pill" key={skill}>
+            {skill}
+          </span>
+        ))}
+      </div>
+
+      <div className="section-head" style={{ marginTop: 28 }}>
+        <h2>Trainers</h2>
         <span className="view-all">View all</span>
       </div>
 
       <div className="teachers">
-        {(mentors.length ? mentors : [{ id: "1", user: { name: "Teacher" } }]).map(
-          (mentor, index) => (
+        {(mentors.length ? mentors : [{ id: "1", user: { name: "Trainer" } }]).map(
+          (mentor) => (
             <div className="teacher" key={mentor.id}>
-              <img alt={mentor.user.name} src={teacherPhotos[index % teacherPhotos.length]} />
-              <div className="teacher-tag">{tags[index % tags.length]}</div>
+              <img alt={mentor.user.name} src="/logo.jpg" />
+              <div className="teacher-tag">{mentor.user.name.split(" ")[0]}</div>
             </div>
           )
         )}

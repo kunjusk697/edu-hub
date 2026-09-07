@@ -58,32 +58,29 @@ export default function CoursePage() {
         </button>
       </div>
 
-      <h1>{course?.title || "UX & Web Design Best Master Course"}</h1>
+      <h1>{course?.title || "Skill Club — Building Skills for Life"}</h1>
       <div>
         <span className="stars">★★★★★</span>
-        <span className="reviews">(124 Review)</span>
+        <span className="reviews">Ages 6–12</span>
       </div>
 
       <div className="instructor">
-        <img
-          alt=""
-          src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=160&q=80"
-        />
+        <img alt="" src="/logo.jpg" />
         <div>
-          <b>{course?.programme?.mentor?.user?.name || "Imran Hossen"}</b>
-          <small>Sr. UX Designer</small>
+          <b>{course?.programme?.mentor?.user?.name || "Eduin Global"}</b>
+          <small>Skill Club trainer</small>
         </div>
         <span className="chat">💬</span>
       </div>
 
       <div className="stats">
         <div className="stat orange">
-          {(course?.enrollments?.length || 1857).toLocaleString()}
-          <span>Students Enrolled</span>
+          365
+          <span>Days of growth</span>
         </div>
         <div className="stat tan">
-          {classes}
-          <span>Total Classes</span>
+          12
+          <span>Core skills</span>
         </div>
       </div>
 

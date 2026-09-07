@@ -41,12 +41,6 @@ export default function CoursePage() {
   const hours = String(Math.floor((diff / (1000 * 60 * 60)) % 24)).padStart(2, "0");
   const minutes = String(Math.floor((diff / (1000 * 60)) % 60)).padStart(2, "0");
 
-  const classes =
-    course?.modules?.reduce(
-      (total, module) => total + (module.sessions?.length || 0),
-      0
-    ) || 46;
-
   return (
     <section className="course">
       <div className="course-top">

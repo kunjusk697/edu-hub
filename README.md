@@ -32,3 +32,16 @@ npm run dev
 ```
 
 `NEXT_PUBLIC_API_URL` defaults to `http://localhost:4000`.
+
+## Student
+
+Pastel mobile student app in `student/`, matching the Eduin theme model (welcome, home, course).
+
+```bash
+cd student
+cp .env.example .env.local
+npm install
+npm run dev
+```
+
+Opens on port `3001`.

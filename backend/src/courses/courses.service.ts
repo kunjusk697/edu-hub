@@ -9,10 +9,30 @@ export class CoursesService {
   findAll() {
     return this.db.course.findMany({
       include: {
-        programme: true,
-        modules: true
+        programme: {
+          include: { mentor: { include: { user: true } } }
+        },
+        modules: true,
+        enrollments: true
       },
       orderBy: { title: 'asc' }
+    });
+  }
+
+  findOne(id: string) {
+    return this.db.course.findUnique({
+      where: { id },
+      include: {
+        programme: {
+          include: { mentor: { include: { user: true } } }
+        },
+        modules: {
+          include: {
+            sessions: true
+          }
+        },
+        enrollments: true
+      }
     });
   }
 

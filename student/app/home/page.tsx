@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
+import { PosterSlideshow } from "../../components/PosterSlideshow";
 import { TabBar } from "../../components/TabBar";
 import { BrandMark } from "../../components/Brand";
 import { api } from "../../lib/api";
@@ -82,9 +83,7 @@ export default function HomePage() {
         </div>
       </div>
 
-      <div className="club-banner">
-        <img src="/hero.jpg" alt="Skill Club kids" />
-      </div>
+      <PosterSlideshow />
 
       <div className="club-stats">
         <div>
@@ -119,9 +118,7 @@ export default function HomePage() {
             <div className="chip">Ages 6–12</div>
           </div>
         </div>
-        <h3>
-          {nextCourse?.title || "Skill Club"}
-        </h3>
+        <h3>Skill Club</h3>
         <p className="class-sub">Building skills for life</p>
         <div className="class-bottom">
           <div className="faces">

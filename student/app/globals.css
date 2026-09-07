@@ -92,6 +92,85 @@ button {
   display: block;
 }
 
+.slideshow {
+  position: relative;
+  width: 100%;
+  margin-top: 14px;
+  border-radius: 24px;
+  overflow: hidden;
+  background: #111;
+  aspect-ratio: 3 / 4.2;
+  box-shadow: 0 18px 40px rgba(255, 90, 0, 0.16);
+}
+
+.home .slideshow {
+  margin-top: 0;
+  margin-bottom: 16px;
+  aspect-ratio: 16 / 10;
+}
+
+.slideshow img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.slideshow img.active {
+  opacity: 1;
+}
+
+.slide-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.45);
+  color: #ffd400;
+  font-size: 22px;
+}
+
+.slide-nav.prev {
+  left: 8px;
+}
+
+.slide-nav.next {
+  right: 8px;
+}
+
+.slide-dots {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 10px;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+
+.slide-dots button {
+  width: 8px;
+  height: 8px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.slide-dots button.on {
+  background: #ff5a00;
+  width: 18px;
+  border-radius: 999px;
+}
+
 .welcome-next {
   margin-top: auto;
   width: 78px;

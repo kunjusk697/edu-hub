@@ -49,7 +49,8 @@ button {
   gap: 6px;
 }
 
-.nav button {
+.nav button,
+.nav a {
   width: 100%;
   border: 0;
   background: transparent;
@@ -57,10 +58,14 @@ button {
   text-align: left;
   padding: 12px 14px;
   border-radius: 8px;
+  text-decoration: none;
+  display: block;
 }
 
 .nav button:hover,
-.nav button.active {
+.nav button.active,
+.nav a:hover,
+.nav a.active {
   background: #273449;
   color: white;
 }
@@ -100,6 +105,9 @@ button {
   border: 1px solid #e5e7eb;
   border-radius: 12px;
   padding: 22px;
+  text-decoration: none;
+  color: inherit;
+  display: block;
 }
 
 .card-title {

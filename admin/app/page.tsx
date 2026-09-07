@@ -1,53 +1,55 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
+
+import { api } from "../lib/api";
+
 export default function HomePage() {
+
+  const [counts, setCounts] = useState({
+    students: 0,
+    parents: 0,
+    mentors: 0,
+    batches: 0
+  });
+
+  useEffect(() => {
+    Promise.all([
+      api("/students").catch(() => []),
+      api("/parents").catch(() => []),
+      api("/mentors").catch(() => []),
+      api("/batches").catch(() => [])
+    ]).then(([students, parents, mentors, batches]) => {
+      setCounts({
+        students: students.length,
+        parents: parents.length,
+        mentors: mentors.length,
+        batches: batches.length
+      });
+    });
+  }, []);
+
   return (
     <>
-      <aside className="sidebar">
-        <div className="logo">Eduin Global</div>
-        <div className="tagline">Education Management Platform</div>
-        <nav className="nav">
-          <button className="active">
-            <span>Dashboard</span>
-          </button>
-          <button>
-            <span>Programmes</span>
-          </button>
-          <button>
-            <span>Courses</span>
-          </button>
-          <button>
-            <span>Students</span>
-          </button>
-          <button>
-            <span>Payments</span>
-          </button>
-        </nav>
-      </aside>
-      <div className="main">
-        <header className="topbar">
-          <div>Admin</div>
-          <div>Eduin Global</div>
-        </header>
-        <div className="content">
-          <h1 className="page-title">Dashboard</h1>
-          <div className="cards">
-            <div className="card">
-              <div className="card-title">Programmes</div>
-              <div className="card-value">0</div>
-            </div>
-            <div className="card">
-              <div className="card-title">Courses</div>
-              <div className="card-value">0</div>
-            </div>
-            <div className="card">
-              <div className="card-title">Students</div>
-              <div className="card-value">0</div>
-            </div>
-            <div className="card">
-              <div className="card-title">Payments</div>
-              <div className="card-value">0</div>
-            </div>
-          </div>
-        </div>
+      <h1 className="page-title">Dashboard</h1>
+      <div className="cards">
+        <Link href="/students" className="card">
+          <div className="card-title">Students</div>
+          <div className="card-value">{counts.students}</div>
+        </Link>
+        <Link href="/parents" className="card">
+          <div className="card-title">Parents</div>
+          <div className="card-value">{counts.parents}</div>
+        </Link>
+        <Link href="/mentors" className="card">
+          <div className="card-title">Mentors</div>
+          <div className="card-value">{counts.mentors}</div>
+        </Link>
+        <Link href="/batches" className="card">
+          <div className="card-title">Batches</div>
+          <div className="card-value">{counts.batches}</div>
+        </Link>
       </div>
     </>
   );

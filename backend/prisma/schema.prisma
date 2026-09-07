@@ -65,6 +65,7 @@ model Student {
   payments     Payment[]
   certificates Certificate[]
   growthDiary  GrowthDiary[]
+  batches      StudentBatch[]
 }
 
 model Parent {
@@ -83,6 +84,7 @@ model Mentor {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   programmes Programme[]
+  batches    Batch[]
 }
 
 model Programme {
@@ -95,6 +97,7 @@ model Programme {
   mentor   Mentor? @relation(fields: [mentorId], references: [id])
 
   courses Course[]
+  batches Batch[]
 
   createdAt DateTime @default(now())
 }
@@ -114,6 +117,7 @@ model Course {
 
   modules     Module[]
   enrollments Enrollment[]
+  batches     Batch[]
 }
 
 model Module {
@@ -267,4 +271,38 @@ model GrowthDiary {
   score Float?
 
   student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+}
+
+model Batch {
+  id          String    @id @default(cuid())
+  name        String
+  programmeId String?
+  courseId    String?
+  mentorId    String?
+  startDate   DateTime?
+  endDate     DateTime?
+  capacity    Int       @default(25)
+  active      Boolean   @default(true)
+
+  programme Programme? @relation(fields: [programmeId], references: [id])
+  course    Course?    @relation(fields: [courseId], references: [id])
+  mentor    Mentor?    @relation(fields: [mentorId], references: [id])
+
+  students StudentBatch[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model StudentBatch {
+  id        String @id @default(cuid())
+  studentId String
+  batchId   String
+
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  batch   Batch   @relation(fields: [batchId], references: [id], onDelete: Cascade)
+
+  joinedAt DateTime @default(now())
+
+  @@unique([studentId, batchId])
 }

@@ -1,4 +1,4 @@
-import { Link } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { colors, radius } from '@/constants/theme';
 import { productImage } from '@/data/productImages';
@@ -13,9 +13,11 @@ const badgeColor: Record<string, string> = {
 
 export function ProductCard({ product, compact }: { product: Product; compact?: boolean }) {
   const price = priceOf(product);
+  const router = useRouter();
   return (
-    <Link href={`/product/${product.id}`} asChild>
-      <Pressable style={[styles.card, compact && styles.compact]}>
+    <Pressable
+      style={[styles.card, compact ? styles.compact : null]}
+      onPress={() => router.push(`/product/${product.id}`)}>
         <View style={styles.artWrap}>
           <Image source={productImage(product.id)} style={styles.art} resizeMode="contain" />
           {product.badge ? (
@@ -39,7 +41,6 @@ export function ProductCard({ product, compact }: { product: Product; compact?: 
           ) : null}
         </View>
       </Pressable>
-    </Link>
   );
 }
 

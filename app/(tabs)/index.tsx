@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Link, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { ProductCard } from '@/components/ProductCard';
 import { SearchBar } from '@/components/SearchBar';
@@ -78,11 +78,9 @@ export default function HomeScreen() {
             <Text style={styles.wTitle}>5-year Aura warranty</Text>
             <Text style={styles.wBody}>Food-first 304 steel interiors. Register coverage in minutes.</Text>
           </View>
-          <Link href="/warranty" asChild>
-            <Pressable style={styles.wBtn}>
-              <Text style={styles.wBtnText}>Register</Text>
-            </Pressable>
-          </Link>
+          <Pressable style={styles.wBtn} onPress={() => router.push('/warranty')}>
+            <Text style={styles.wBtnText}>Register</Text>
+          </Pressable>
         </View>
 
         <SectionHeader title="Bestsellers" subtitle="Tagged from the catalog" />

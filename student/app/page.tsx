@@ -1,17 +1,10 @@
 import Link from "next/link";
 
-import { BrandLogo } from "../components/Brand";
-
 export default function WelcomePage() {
   return (
     <section className="welcome">
-      <BrandLogo className="welcome-logo" />
-      <div className="hero-ring">
-        <img
-          className="hero-photo"
-          alt="Student"
-          src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=600&q=80"
-        />
+      <div className="hero-brand">
+        <img src="/logo.jpg" alt="Eduin Global Skill Club" />
       </div>
       <h1>
         Learning

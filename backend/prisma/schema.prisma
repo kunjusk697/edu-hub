@@ -1,0 +1,352 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  MENTOR
+  STUDENT
+  PARENT
+}
+
+enum EnrollmentStatus {
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  PARTIAL
+  REFUNDED
+}
+
+enum AssessmentType {
+  QUIZ
+  TEST
+  ASSIGNMENT
+  PRACTICAL
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  phone        String?
+  passwordHash String
+  roles        Role[]
+
+  student Student?
+  parent  Parent?
+  mentor  Mentor?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Student {
+  id     String @id @default(cuid())
+  userId String @unique
+
+  user User @relation(
+    fields: [userId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+  parentId String?
+  parent   Parent? @relation(
+    fields: [parentId],
+    references: [id]
+  )
+
+  enrollments Enrollment[]
+  attendance  Attendance[]
+  submissions Submission[]
+  payments    Payment[]
+  certificates Certificate[]
+  growthDiary GrowthDiary[]
+}
+
+model Parent {
+  id     String @id @default(cuid())
+  userId String @unique
+
+  user User @relation(
+    fields: [userId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+  children Student[]
+}
+
+model Mentor {
+  id     String @id @default(cuid())
+  userId String @unique
+
+  user User @relation(
+    fields: [userId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+  programmes Programme[]
+}
+
+model Programme {
+  id          String  @id @default(cuid())
+  name        String
+  description String?
+  active      Boolean @default(true)
+
+  mentorId String?
+  mentor   Mentor? @relation(
+    fields: [mentorId],
+    references: [id]
+  )
+
+  courses Course[]
+
+  createdAt DateTime @default(now())
+}
+
+model Course {
+  id String @id @default(cuid())
+
+  programmeId String
+
+  programme Programme @relation(
+    fields: [programmeId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+  title       String
+  description String?
+
+  fee Decimal @db.Decimal(12, 2) @default(0)
+
+  active Boolean @default(true)
+
+  modules     Module[]
+  enrollments Enrollment[]
+}
+
+model Module {
+  id String @id @default(cuid())
+
+  courseId String
+
+  course Course @relation(
+    fields: [courseId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+  title String
+  order Int @default(0)
+
+  sessions Session[]
+}
+
+model Session {
+  id String @id @default(cuid())
+
+  moduleId String
+
+  module Module @relation(
+    fields: [moduleId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+  title String
+
+  startsAt DateTime?
+
+  meetingUrl  String?
+  recordingUrl String?
+
+  materials   Material[]
+  assignments Assessment[]
+  attendance  Attendance[]
+}
+
+model Material {
+  id String @id @default(cuid())
+
+  sessionId String
+
+  session Session @relation(
+    fields: [sessionId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+  title String
+  type  String
+  url   String
+}
+
+model Assessment {
+  id String @id @default(cuid())
+
+  sessionId String
+
+  session Session @relation(
+    fields: [sessionId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+  title String
+
+  type AssessmentType
+
+  maxScore Int @default(100)
+
+  submissions Submission[]
+}
+
+model Submission {
+  id String @id @default(cuid())
+
+  assessmentId String
+  studentId    String
+
+  assessment Assessment @relation(
+    fields: [assessmentId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+  student Student @relation(
+    fields: [studentId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+  score    Float?
+  feedback String?
+
+  submittedAt DateTime @default(now())
+}
+
+model Enrollment {
+  id String @id @default(cuid())
+
+  studentId String
+  courseId  String
+
+  status EnrollmentStatus @default(ACTIVE)
+
+  enrolledAt DateTime @default(now())
+
+  student Student @relation(
+    fields: [studentId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+  course Course @relation(
+    fields: [courseId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+  @@unique([studentId, courseId])
+}
+
+model Attendance {
+  id String @id @default(cuid())
+
+  studentId String
+  sessionId String
+
+  present Boolean @default(false)
+
+  markedAt DateTime @default(now())
+
+  student Student @relation(
+    fields: [studentId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+  session Session @relation(
+    fields: [sessionId],
+    references: [id],
+    onDelete: Cascade
+  )
+
+  @@unique([studentId, sessionId])
+}
+
+model Payment {
+  id String @id @default(cuid())
+
+  studentId String
+
+  amount Decimal @db.Decimal(12, 2)
+
+  status PaymentStatus @default(PENDING)
+
+  method        String?
+  transactionId String?
+
+  dueDate DateTime?
+  paidAt  DateTime?
+
+  student Student @relation(
+    fields: [studentId],
+    references: [id],
+    onDelete: Cascade
+  )
+}
+
+model Certificate {
+  id String @id @default(cuid())
+
+  studentId String
+
+  programmeName String
+  courseName    String
+
+  certificateNo String @unique
+
+  completionDate DateTime
+
+  verificationToken String @unique
+
+  student Student @relation(
+    fields: [studentId],
+    references: [id],
+    onDelete: Cascade
+  )
+}
+
+model GrowthDiary {
+  id String @id @default(cuid())
+
+  studentId String
+
+  entryDate DateTime @default(now())
+
+  title   String
+  content String
+
+  score Float?
+
+  student Student @relation(
+    fields: [studentId],
+    references: [id],
+    onDelete: Cascade
+  )
+}

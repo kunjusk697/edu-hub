@@ -25,8 +25,12 @@ export function AdminShell({
   return (
     <>
       <aside className="sidebar">
-        <div className="logo">Eduin Global</div>
-        <div className="tagline">Education Management Platform</div>
+        <img
+          className="brand-logo"
+          src="/logo.jpg"
+          alt="Eduin Global Skill Club"
+        />
+        <div className="tagline">Skill Club Admin</div>
         <nav className="nav">
           {links.map((link) => {
             const active =
@@ -49,7 +53,7 @@ export function AdminShell({
       <div className="main">
         <header className="topbar">
           <div>Admin</div>
-          <div>Eduin Global</div>
+          <img className="topbar-logo" src="/logo.jpg" alt="Eduin Global Skill Club" />
         </header>
         <div className="content">{children}</div>
       </div>

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
 import { TabBar } from "../../components/TabBar";
+import { BrandMark } from "../../components/Brand";
 import { api } from "../../lib/api";
 
 type Course = {
@@ -64,6 +65,7 @@ export default function HomePage() {
         <button className="icon-btn" aria-label="Menu">
           ☰
         </button>
+        <BrandMark className="home-brand" />
         <img
           className="avatar"
           alt="You"

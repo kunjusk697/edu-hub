@@ -1,8 +1,11 @@
 import Link from "next/link";
 
+import { BrandLogo } from "../components/Brand";
+
 export default function WelcomePage() {
   return (
     <section className="welcome">
+      <BrandLogo className="welcome-logo" />
       <div className="hero-ring">
         <img
           className="hero-photo"

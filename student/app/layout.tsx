@@ -4,7 +4,11 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Eduin Student",
-  description: "Learning can be fun"
+  description: "Eduin Global Skill Club",
+  icons: {
+    icon: "/icon.svg",
+    apple: "/logo.jpg"
+  }
 };
 
 export default function RootLayout({

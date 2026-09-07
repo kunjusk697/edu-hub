@@ -69,12 +69,20 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 48px 28px 40px;
+  padding: 28px 28px 40px;
+}
+
+.welcome-logo {
+  width: 210px;
+  background: #fff;
+  border-radius: 18px;
+  padding: 10px 14px;
+  box-shadow: 0 10px 24px rgba(80, 40, 60, 0.12);
 }
 
 .hero-ring {
-  width: 280px;
-  height: 280px;
+  width: 240px;
+  height: 240px;
   border-radius: 50%;
   background:
     radial-gradient(circle at 50% 45%, transparent 58%, rgba(255,255,255,.18) 59%, rgba(255,255,255,.18) 63%, transparent 64%),
@@ -87,15 +95,15 @@ button {
 }
 
 .hero-photo {
-  width: 210px;
-  height: 210px;
+  width: 180px;
+  height: 180px;
   border-radius: 50%;
   object-fit: cover;
   background: #d8b8c8;
 }
 
 .welcome h1 {
-  margin: 48px 0 8px;
+  margin: 28px 0 8px;
   font-size: 42px;
   line-height: 1.05;
   font-weight: 800;
@@ -132,6 +140,11 @@ button {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.home-brand {
+  width: 22px;
+  height: 32px;
 }
 
 .icon-btn {

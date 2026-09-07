@@ -5,9 +5,8 @@ export default function WelcomePage() {
     <section className="welcome">
       <img className="welcome-mark" src="/logo.jpg" alt="Eduin Global Skill Club" />
       <div className="hero-flyer">
-        <img src="/hero.jpg" alt="Skill Club admissions" />
+        <img src="/hero.jpg" alt="Skill Club — building skills for life" />
       </div>
-      <p className="welcome-tag">Building skills for life</p>
       <Link href="/home" className="welcome-next" aria-label="Continue">
         →
       </Link>

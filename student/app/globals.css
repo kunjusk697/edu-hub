@@ -79,8 +79,8 @@ button {
 
 .hero-flyer {
   width: 100%;
-  margin-top: 16px;
-  border-radius: 28px;
+  margin-top: 14px;
+  border-radius: 24px;
   overflow: hidden;
   background: #fff;
   box-shadow: 0 18px 40px rgba(255, 90, 0, 0.16);
@@ -90,15 +90,6 @@ button {
   width: 100%;
   height: auto;
   display: block;
-}
-
-.welcome-tag {
-  margin: 16px 0 0;
-  color: var(--orange);
-  font-size: 16px;
-  font-weight: 800;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
 }
 
 .welcome-next {
